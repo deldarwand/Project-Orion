@@ -25,6 +25,15 @@ class AProjectOrionCharacter : public ACharacter
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
+
+	/**Collision Sphere to check for collision with different components of the scene*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* InteractionSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Lighting", meta = (AllowPrivateAccess = "true"))
+		class UStaticMeshComponent* ActorMesh;
+
+
 public:
 	AProjectOrionCharacter();
 
@@ -76,6 +85,9 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+
+	/** Called when the interact button is pressed */
+	void SceneInteract();
 
 	struct TouchData
 	{

@@ -9,7 +9,7 @@ UCLASS()
 class PROJECTORION_API ADoor : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	ADoor();
@@ -19,6 +19,9 @@ public:
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
+
+	/** Return the mesh for the pickup */
+	FORCEINLINE class UStaticMeshComponent* GetMesh() const { return DoorMesh; }
 
 private:
 	/** Static mesh for the door in the level*/

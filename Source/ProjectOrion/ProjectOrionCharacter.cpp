@@ -5,6 +5,7 @@
 #include "ProjectOrionProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
+#include "Door.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -30,21 +31,32 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
 	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
-	Mesh1P->bCastDynamicShadow = false;
-	Mesh1P->CastShadow = false;
+	Mesh1P->bCastDynamicShadow = true;
+	Mesh1P->CastShadow = true;
 	Mesh1P->RelativeRotation = FRotator(1.9f, -19.19f, 5.2f);
 	Mesh1P->RelativeLocation = FVector(-0.5f, -4.4f, -155.7f);
 
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
 	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
-	FP_Gun->bCastDynamicShadow = false;
-	FP_Gun->CastShadow = false;
+	FP_Gun->bCastDynamicShadow = true;
+	FP_Gun->CastShadow = true;
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
+
+
 
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+
+	ActorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ActorMesh"));
+	ActorMesh->SetupAttachment(FirstPersonCameraComponent);
+	ActorMesh->RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
+
+	//Add the interaction sphere to the character
+	InteractionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("InteractionSphere"));
+	//InteractionSphere->AttachTo(RootComponent);
+	InteractionSphere->SetSphereRadius(200.0f);
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
@@ -72,6 +84,9 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	//Add the interaction keypressed
+	InputComponent->BindAction("Interact", IE_Pressed, this, &AProjectOrionCharacter::SceneInteract);
+
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AProjectOrionCharacter::TouchStarted);
 	if (EnableTouchscreenMovement(InputComponent) == false)
 	{
@@ -88,6 +103,29 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAxis("TurnRate", this, &AProjectOrionCharacter::TurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	InputComponent->BindAxis("LookUpRate", this, &AProjectOrionCharacter::LookUpAtRate);
+}
+
+void AProjectOrionCharacter::SceneInteract()
+{
+	UE_LOG(LogTemp, Warning, TEXT("You pressed the interact button"));
+	
+	TArray<AActor*> InteractableActors;
+	InteractionSphere->GetOverlappingActors(InteractableActors);
+
+	UE_LOG(LogTemp, Warning, TEXT("The number of intersected objects is : %i"), InteractableActors.Num());
+
+	for (int i = 0; i < InteractableActors.Num(); i++)
+	{
+		ADoor* const currentDoor = Cast<ADoor>(InteractableActors[i]);
+		if (currentDoor)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Went into door"));
+			if (!currentDoor->IsPendingKill())
+			{
+				currentDoor->Destroy();
+			}
+		}
+	}
 }
 
 void AProjectOrionCharacter::OnFire()
