@@ -31,8 +31,10 @@ class AProjectOrionCharacter : public ACharacter
 	class USphereComponent* InteractionSphere;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Lighting", meta = (AllowPrivateAccess = "true"))
-		class UStaticMeshComponent* ActorMesh;
+	class UStaticMeshComponent* ActorMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Tracked Movement", meta = (AllowPrivateAccess = "true"))
+	class UProjectOrionMotionController* LeftHandMotionController;
 
 public:
 	AProjectOrionCharacter();
@@ -121,5 +123,19 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+private:
+
+	/** These are the set of functions that link to the subclass
+		of the UProjectOrionMotionController functions to toggle
+		the movement and rotation of the controller.*/
+	void ToggleMotionLeft();
+	void ToggleMotionRight();
+	void ToggleMotionForward();
+	void ToggleMotionBack();
+	void ToggleMotionUp();
+	void ToggleMotionDown();
+	void ToggleXRotation();
+	void ToggleYRotation();
+	void ToggleZRotation();
 };
 

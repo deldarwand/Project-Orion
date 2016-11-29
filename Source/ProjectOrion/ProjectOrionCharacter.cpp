@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 #include "Door.h"
+#include "ProjectOrionMotionController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -71,6 +72,15 @@ void AProjectOrionCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint")); //Attach gun mesh component to Skeleton, doing it here because the skelton is not yet created in the constructor
+	LeftHandMotionController = this->FindComponentByClass<UProjectOrionMotionController>();
+	if (!LeftHandMotionController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could not find motion controller component."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Found the motion controller component"));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -96,6 +106,34 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAxis("MoveForward", this, &AProjectOrionCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AProjectOrionCharacter::MoveRight);
 
+	// Binds all of the motion controller toggles to the functions that will allow the movement and rotation to be set.
+	InputComponent->BindAction("MoveMotionControllerLeft", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionLeft);
+	InputComponent->BindAction("MoveMotionControllerLeft", IE_Released, this, &AProjectOrionCharacter::ToggleMotionLeft);
+
+	InputComponent->BindAction("MoveMotionControllerRight", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionRight);
+	InputComponent->BindAction("MoveMotionControllerRight", IE_Released, this, &AProjectOrionCharacter::ToggleMotionRight);
+
+	InputComponent->BindAction("MoveMotionControllerForward", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionForward);
+	InputComponent->BindAction("MoveMotionControllerForward", IE_Released, this, &AProjectOrionCharacter::ToggleMotionForward);
+
+	InputComponent->BindAction("MoveMotionControllerBack", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionBack);
+	InputComponent->BindAction("MoveMotionControllerBack", IE_Released, this, &AProjectOrionCharacter::ToggleMotionBack);
+
+	InputComponent->BindAction("MoveMotionControllerUp", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionUp);
+	InputComponent->BindAction("MoveMotionControllerUp", IE_Released, this, &AProjectOrionCharacter::ToggleMotionUp);
+
+	InputComponent->BindAction("MoveMotionControllerDown", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionDown);
+	InputComponent->BindAction("MoveMotionControllerDown", IE_Released, this, &AProjectOrionCharacter::ToggleMotionDown);
+
+	InputComponent->BindAction("RotateControllerAroundX", IE_Pressed, this, &AProjectOrionCharacter::ToggleXRotation);
+	InputComponent->BindAction("RotateControllerAroundX", IE_Released, this, &AProjectOrionCharacter::ToggleXRotation);
+
+	InputComponent->BindAction("RotateControllerAroundY", IE_Pressed, this, &AProjectOrionCharacter::ToggleYRotation);
+	InputComponent->BindAction("RotateControllerAroundY", IE_Released, this, &AProjectOrionCharacter::ToggleYRotation);
+
+	InputComponent->BindAction("RotateControllerAroundZ", IE_Pressed, this, &AProjectOrionCharacter::ToggleZRotation);
+	InputComponent->BindAction("RotateControllerAroundZ", IE_Released, this, &AProjectOrionCharacter::ToggleZRotation);
+
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
@@ -103,6 +141,51 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAxis("TurnRate", this, &AProjectOrionCharacter::TurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	InputComponent->BindAxis("LookUpRate", this, &AProjectOrionCharacter::LookUpAtRate);
+}
+
+void AProjectOrionCharacter::ToggleXRotation()
+{
+	LeftHandMotionController->ToggleXRotation();
+}
+
+void AProjectOrionCharacter::ToggleYRotation()
+{
+	LeftHandMotionController->ToggleYRotation();
+}
+
+void AProjectOrionCharacter::ToggleZRotation()
+{
+	LeftHandMotionController->ToggleZRotation();
+}
+
+void AProjectOrionCharacter::ToggleMotionLeft()
+{
+	LeftHandMotionController->ToggleMoveLeft();
+}
+
+void AProjectOrionCharacter::ToggleMotionRight()
+{
+	LeftHandMotionController->ToggleMoveRight();
+}
+
+void AProjectOrionCharacter::ToggleMotionForward()
+{
+	LeftHandMotionController->ToggleMoveForward();
+}
+
+void AProjectOrionCharacter::ToggleMotionBack()
+{
+	LeftHandMotionController->ToggleMoveBack();
+}
+
+void AProjectOrionCharacter::ToggleMotionUp()
+{
+	LeftHandMotionController->ToggleMoveUp();
+}
+
+void AProjectOrionCharacter::ToggleMotionDown()
+{
+	LeftHandMotionController->ToggleMoveDown();
 }
 
 void AProjectOrionCharacter::SceneInteract()
