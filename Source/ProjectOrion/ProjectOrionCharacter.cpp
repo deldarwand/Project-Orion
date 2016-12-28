@@ -72,15 +72,49 @@ void AProjectOrionCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint")); //Attach gun mesh component to Skeleton, doing it here because the skelton is not yet created in the constructor
-	LeftHandMotionController = this->FindComponentByClass<UProjectOrionMotionController>();
+	
+    TArray<UActorComponent*> ArrayOfMotionControllers = this->GetComponentsByClass(UProjectOrionMotionController::StaticClass());
+    
+    for (int i = 0; i < ArrayOfMotionControllers.Num(); i++)
+    {
+        UProjectOrionMotionController* const MotionController = Cast<UProjectOrionMotionController>(ArrayOfMotionControllers[i]);
+     /*   if (MotionController->Hand == EControllerHand::Left) LeftHandMotionController = MotionController;
+        if (MotionController->Hand == EControllerHand::Right) RightHandMotionController = MotionController;
+        if (MotionController->Hand == EControllerHand::Pad) UE_LOG(LogTemp, Warning, TEXT("DIE"));*/
+        if (i == 0)
+        {
+            MotionController->Hand = EControllerHand::Left;
+            LeftHandMotionController = MotionController;
+        }
+        if (i == 1)
+        {
+            MotionController->Hand = EControllerHand::Right;
+            RightHandMotionController = MotionController;
+        }
+    }
+
+    if (ArrayOfMotionControllers.Num() == 2)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("FOUND 2 Motion Controllers"));
+    }
+
 	if (!LeftHandMotionController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not find motion controller component."));
+		UE_LOG(LogTemp, Warning, TEXT("Could not find LEFT motion controller component."));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Found the motion controller component"));
+		UE_LOG(LogTemp, Warning, TEXT("Found the LEFT motion controller component"));
 	}
+
+    if (!RightHandMotionController)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Could not find RIGHT motion controller component."));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Found the motion RIGHT controller component"));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -134,6 +168,12 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAction("RotateControllerAroundZ", IE_Pressed, this, &AProjectOrionCharacter::ToggleZRotation);
 	InputComponent->BindAction("RotateControllerAroundZ", IE_Released, this, &AProjectOrionCharacter::ToggleZRotation);
 
+    InputComponent->BindAction("GrabRight", IE_Pressed, this, &AProjectOrionCharacter::GrabRight);
+    InputComponent->BindAction("GrabRight", IE_Released, this, &AProjectOrionCharacter::ReleaseRight);
+
+    InputComponent->BindAction("GrabLeft", IE_Pressed, this, &AProjectOrionCharacter::GrabLeft);
+    InputComponent->BindAction("GrabLeft", IE_Released, this, &AProjectOrionCharacter::ReleaseLeft);
+
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
@@ -141,6 +181,30 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAxis("TurnRate", this, &AProjectOrionCharacter::TurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	InputComponent->BindAxis("LookUpRate", this, &AProjectOrionCharacter::LookUpAtRate);
+}
+
+void AProjectOrionCharacter::GrabRight()
+{
+    RightHandMotionController->GrabComponent();
+    UE_LOG(LogTemp, Warning, TEXT("Right Grabbing"));
+}
+
+void AProjectOrionCharacter::ReleaseRight()
+{
+    RightHandMotionController->ReleaseComponent();
+    UE_LOG(LogTemp, Warning, TEXT("Right Releasing"));
+}
+
+void AProjectOrionCharacter::GrabLeft()
+{
+    LeftHandMotionController->GrabComponent();
+    UE_LOG(LogTemp, Warning, TEXT("Left Grabbing"));
+}
+
+void AProjectOrionCharacter::ReleaseLeft()
+{
+    LeftHandMotionController->ReleaseComponent();
+    UE_LOG(LogTemp, Warning, TEXT("Left Releasing"));
 }
 
 void AProjectOrionCharacter::ToggleXRotation()

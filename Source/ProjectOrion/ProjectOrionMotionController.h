@@ -23,6 +23,12 @@ public:
 	void RotateController(FRotator RotationRotator);
 
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+
+    bool GrabComponent();
+    bool ReleaseComponent();
+
+    void ToggleBoolean(bool* booleanToToggle);
 	void ToggleMoveRight();
 	void ToggleMoveLeft();
 	void ToggleMoveForward();
@@ -37,11 +43,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Motion Simulation", meta = (AllowPrivateAccess = "true"))
 	bool ShouldBeSimulated;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grab Sphere Size", meta = (AllowPrivateAccess = "true"))
+    float GrabSphereSize = 50.0f;
+
+    class USphereComponent* GrabSphere;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Motion Simulation", meta = (AllowPrivateAccess = "true"))
+    EControllerHand StartHand;
+
+    friend class AProjectOrionCharacter;
+
 private:
 	FVector ControllerPosition, TranslationSpeedVector;
 	FRotator ControllerOrientation, RotationSpeedRotator;
 	bool ShouldMoveLeft, ShouldMoveRight, ShouldMoveForward, ShouldMoveBack, ShouldMoveUp, ShouldMoveDown;
 	bool ShouldRotateAroundX, ShouldRotateAroundY, ShouldRotateAroundZ;
+    class AProjectOrionGrabbable* ComponentGrabbed;
 
 	bool PollControllerState(FVector& Position, FRotator& Orientation);
 	

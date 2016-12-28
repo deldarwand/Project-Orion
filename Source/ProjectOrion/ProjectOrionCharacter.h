@@ -36,6 +36,9 @@ class AProjectOrionCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Tracked Movement", meta = (AllowPrivateAccess = "true"))
 	class UProjectOrionMotionController* LeftHandMotionController;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Tracked Movement", meta = (AllowPrivateAccess = "true"))
+    class UProjectOrionMotionController* RightHandMotionController;
+
 public:
 	AProjectOrionCharacter();
 
@@ -90,6 +93,18 @@ protected:
 
 	/** Called when the interact button is pressed */
 	void SceneInteract();
+
+    /** Called when user wants to grab object with right hand*/
+    void GrabRight();
+
+    /** Called when user wants to let go of object with right hand*/
+    void ReleaseRight();
+
+    /** Called when user wants to grab object with left hand*/
+    void GrabLeft();
+
+    /** Called when user wants to let go of object with left hand*/
+    void ReleaseLeft();
 
 	struct TouchData
 	{
