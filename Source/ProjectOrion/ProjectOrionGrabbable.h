@@ -20,7 +20,7 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-    void GrabbedBy(class USceneComponent* componentToAttachTo);
+    bool GrabbedBy(class USceneComponent* componentToAttachTo);
     void ReleasedBy(class USceneComponent* componentToAttachTo);
 
     
@@ -28,4 +28,7 @@ public:
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* GrabMesh;
+
+    bool Attached;
+
 };

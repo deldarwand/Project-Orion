@@ -115,9 +115,11 @@ bool UProjectOrionMotionController::GrabComponent()
             AProjectOrionGrabbable* const TestGrabbable = Cast<AProjectOrionGrabbable>(GrabbableActors[i]);
             if (TestGrabbable && !grabbed)
             {
-                grabbed = true;
-                TestGrabbable->GrabbedBy(GrabSphere);
-                ComponentGrabbed = TestGrabbable;
+                grabbed = TestGrabbable->GrabbedBy(GrabSphere);;
+                if (grabbed)
+                {
+                    ComponentGrabbed = TestGrabbable;
+                }
             }
             FString ActorName = GrabbableActors[i]->GetName();
             UE_LOG(LogClass, Log, TEXT("Actor number %i is named %s"), i, *ActorName);

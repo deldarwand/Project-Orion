@@ -12,6 +12,7 @@ AProjectOrionGrabbable::AProjectOrionGrabbable()
 
     GrabMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrabMesh"));
     RootComponent = GrabMesh;
+    Attached = false;
 
 }
 
@@ -28,21 +29,30 @@ void AProjectOrionGrabbable::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AProjectOrionGrabbable::GrabbedBy(class USceneComponent* componentToAttachTo)
+bool AProjectOrionGrabbable::GrabbedBy(class USceneComponent* componentToAttachTo)
 {
+    bool Success = true;
     GrabMesh->SetSimulatePhysics(false);
-    if (GrabMesh->AttachToComponent(componentToAttachTo, FAttachmentTransformRules::KeepWorldTransform))
+    if (GrabMesh->AttachToComponent(componentToAttachTo, FAttachmentTransformRules::KeepWorldTransform) && !Attached)
     {
         UE_LOG(LogClass, Log, TEXT("Success"));
     }
     else
     {
         UE_LOG(LogClass, Log, TEXT("Fail"));
+        Success = false;
     }
+    if (Attached)
+    {
+        Success = false;
+    }
+
+    return Success;
 }
 
 void AProjectOrionGrabbable::ReleasedBy(class USceneComponent* componentToAttachTo)
 {
+    Attached = false;
     GrabMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
     GrabMesh->SetSimulatePhysics(true);
 }
