@@ -30,8 +30,8 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1P->SetOnlyOwnerSee(true);
-	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
+	Mesh1P->SetOnlyOwnerSee(false);
+	//Mesh1P->SetupAttachment(FirstPersonCameraComponent);
 	Mesh1P->bCastDynamicShadow = true;
 	Mesh1P->CastShadow = true;
 	Mesh1P->RelativeRotation = FRotator(1.9f, -19.19f, 5.2f);
