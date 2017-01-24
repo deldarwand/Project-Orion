@@ -44,6 +44,8 @@ public:
 
 	virtual void BeginPlay();
 
+    virtual void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult);
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;

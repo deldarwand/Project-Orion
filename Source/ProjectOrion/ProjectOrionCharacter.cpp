@@ -66,6 +66,13 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void AProjectOrionCharacter::CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Function to calculate camera within Project Orion Character"));
+    AActor::CalcCamera(DeltaTime, OutResult);
+    //OutResult.Location += FVector(0.0f, 0.0f, 50.0f);
+}
+
 void AProjectOrionCharacter::BeginPlay()
 {
 	// Call the base class  
