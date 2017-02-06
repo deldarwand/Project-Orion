@@ -98,6 +98,7 @@ void AProjectOrionCharacter::BeginPlay()
             MotionController->Hand = EControllerHand::Right;
             RightHandMotionController = MotionController;
         }
+
     }
 
     if (ArrayOfMotionControllers.Num() == 2)
