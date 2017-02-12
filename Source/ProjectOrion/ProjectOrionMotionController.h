@@ -51,9 +51,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Motion Simulation", meta = (AllowPrivateAccess = "true"))
     EControllerHand StartHand;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Phone", meta = (AllowPrivateAccess = "true"))
+    bool IsPhoneHand;
+
     friend class AProjectOrionCharacter;
 
+    void BeginPlay();
+
 private:
+    UAudioComponent* PhoneAudioComponent;
 	FVector ControllerPosition, TranslationSpeedVector;
 	FRotator ControllerOrientation, RotationSpeedRotator;
 	bool ShouldMoveLeft, ShouldMoveRight, ShouldMoveForward, ShouldMoveBack, ShouldMoveUp, ShouldMoveDown;

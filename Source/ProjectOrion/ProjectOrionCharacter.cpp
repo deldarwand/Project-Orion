@@ -68,7 +68,7 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 
 void AProjectOrionCharacter::CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Function to calculate camera within Project Orion Character"));
+    //UE_LOG(LogTemp, Warning, TEXT("Function to calculate camera within Project Orion Character"));
     AActor::CalcCamera(DeltaTime, OutResult);
     //OutResult.Location += FVector(0.0f, 0.0f, 50.0f);
 }
@@ -100,7 +100,7 @@ void AProjectOrionCharacter::BeginPlay()
         }
 
     }
-
+    
     if (ArrayOfMotionControllers.Num() == 2)
     {
         UE_LOG(LogTemp, Warning, TEXT("FOUND 2 Motion Controllers"));
@@ -113,6 +113,7 @@ void AProjectOrionCharacter::BeginPlay()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Found the LEFT motion controller component"));
+        LeftHandMotionController->BeginPlay();
 	}
 
     if (!RightHandMotionController)
@@ -122,6 +123,7 @@ void AProjectOrionCharacter::BeginPlay()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("Found the motion RIGHT controller component"));
+        RightHandMotionController->BeginPlay();
     }
 }
 

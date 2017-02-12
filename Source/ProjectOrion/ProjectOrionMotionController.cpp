@@ -29,7 +29,33 @@ UProjectOrionMotionController::UProjectOrionMotionController()
     GrabSphere->AttachTo(this);
     GrabSphere->SetSphereRadius(GrabSphereSize);
     ComponentGrabbed = NULL;
+
     /** End of the Grab Functionality Initialisation */
+}
+
+void UProjectOrionMotionController::BeginPlay()
+{
+    TArray<USceneComponent*> ArrayOfComponents;
+    GetChildrenComponents(true, ArrayOfComponents);
+    PhoneAudioComponent = NULL;
+    int numberOfChildComponents = ArrayOfComponents.Num();
+    for (int i = 0; i < numberOfChildComponents; i++)
+    {
+        USceneComponent* CurrentComponent = ArrayOfComponents[i];
+        UAudioComponent* AudioComponent = Cast<UAudioComponent>(CurrentComponent);
+        if (AudioComponent)
+        {
+            PhoneAudioComponent = AudioComponent;
+            IsPhoneHand = true;
+            UE_LOG(LogClass, Log, TEXT("Found the audio component in the hand"));
+        }
+    }
+
+    if (!PhoneAudioComponent)
+    {
+        IsPhoneHand = false;
+        UE_LOG(LogClass, Log, TEXT("DIDN'T FIND the audio component in the hand"));
+    }
 }
 
 void UProjectOrionMotionController::ToggleBoolean(bool* booleanToToggle)
@@ -149,6 +175,18 @@ void UProjectOrionMotionController::TickComponent(float DeltaTime, enum ELevelTi
 		UMotionControllerComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
 		return;
 	}
+    if (PhoneAudioComponent)
+    {
+        bool IsPlaying = PhoneAudioComponent->IsPlaying;
+        if (IsPlaying)
+        {
+
+        }
+        else
+        {
+            PhoneAudioComponent->Play();
+        }
+    }
 	FVector Position = FVector(0.0f);
 	FRotator Orientation;
 	FVector DeltaMovement = TranslationSpeedVector * DeltaTime;
