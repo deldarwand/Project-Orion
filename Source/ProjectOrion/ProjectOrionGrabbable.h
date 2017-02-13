@@ -23,11 +23,20 @@ public:
     bool GrabbedBy(class USceneComponent* componentToAttachTo);
     void ReleasedBy(class USceneComponent* componentToAttachTo);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
+    bool ShouldUseLockedAxis;
     
-
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* GrabMesh;
+
+    FVector OriginalPosition;
+    FRotator OriginalrRotation;
+
+    class USceneComponent* ComponentToFollow;
+
+    FVector AxisLocked;
+    bool RotationLocked;
 
     bool Attached;
 

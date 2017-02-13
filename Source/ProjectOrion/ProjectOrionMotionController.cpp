@@ -177,7 +177,7 @@ void UProjectOrionMotionController::TickComponent(float DeltaTime, enum ELevelTi
 	}
     if (PhoneAudioComponent)
     {
-        bool IsPlaying = PhoneAudioComponent->IsPlaying;
+        bool IsPlaying = PhoneAudioComponent->IsPlaying();
         if (IsPlaying)
         {
 

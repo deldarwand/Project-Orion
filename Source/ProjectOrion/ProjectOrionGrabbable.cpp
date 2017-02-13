@@ -13,6 +13,7 @@ AProjectOrionGrabbable::AProjectOrionGrabbable()
     GrabMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrabMesh"));
     RootComponent = GrabMesh;
     Attached = false;
+    ComponentToFollow = NULL;
 
 }
 
@@ -20,17 +21,39 @@ AProjectOrionGrabbable::AProjectOrionGrabbable()
 void AProjectOrionGrabbable::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    AxisLocked = FVector(0.0, 1.0, 0.0);
 }
 
 // Called every frame
 void AProjectOrionGrabbable::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    if (ShouldUseLockedAxis && ComponentToFollow)
+    {
+        //Move after the ComponentToFollow taking into account the axisLocked variables.
+        float XMovement, YMovement, ZMovement;
+        FVector CurrentLocation = GetActorLocation();
+        FVector FollowLocation = ComponentToFollow->GetComponentLocation();
+        FVector LocationDifference = FollowLocation - CurrentLocation;
+        XMovement = LocationDifference.X * AxisLocked.X;
+        YMovement = LocationDifference.Y * AxisLocked.Y;
+        ZMovement = LocationDifference.Z * AxisLocked.Z;
+
+        FVector NewLocation = CurrentLocation + FVector(XMovement, YMovement, ZMovement);
+        SetActorLocation(NewLocation);
+
+    }
 }
 
 bool AProjectOrionGrabbable::GrabbedBy(class USceneComponent* componentToAttachTo)
 {
+    if (ShouldUseLockedAxis)
+    {
+        Attached = true;
+        ComponentToFollow = componentToAttachTo;
+        return true;
+    }
+
     bool Success = true;
     GrabMesh->SetSimulatePhysics(false);
     if (GrabMesh->AttachToComponent(componentToAttachTo, FAttachmentTransformRules::KeepWorldTransform) && !Attached)
@@ -52,6 +75,12 @@ bool AProjectOrionGrabbable::GrabbedBy(class USceneComponent* componentToAttachT
 
 void AProjectOrionGrabbable::ReleasedBy(class USceneComponent* componentToAttachTo)
 {
+    if (ShouldUseLockedAxis)
+    {
+        Attached = false;
+        ComponentToFollow = NULL;
+        return;
+    }
     Attached = false;
     GrabMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
     GrabMesh->SetSimulatePhysics(true);
