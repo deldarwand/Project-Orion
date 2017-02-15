@@ -21,85 +21,98 @@ AProjectOrionGrabbable::AProjectOrionGrabbable()
 void AProjectOrionGrabbable::BeginPlay()
 {
 	Super::BeginPlay();
-    AxisLocked = FVector(0.0, 1.0, 0.0);
     OriginalPosition = GetActorLocation();
-    MovementLocked = FVector(0.0, 10.0, 0.0);
+    if (NegativeLock)
+    {
+        OriginalPosition += MovementLocked;
+    }
 }
 
 // Called every frame
 void AProjectOrionGrabbable::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    float XMovement, YMovement, ZMovement;
-    FVector CurrentLocation = GetActorLocation();
-    if (ShouldUseLockedAxis && ComponentToFollow)
+    if (ComponentToFollow)
     {
-        //Move after the ComponentToFollow taking into account the axisLocked variables.
+        float XMovement, YMovement, ZMovement;
+        FVector FollowDifference = LastFollowPosition - ComponentToFollow->GetComponentLocation();
+        FVector CurrentLocation = GetActorLocation();
+        if (ShouldUseLockedAxis && ComponentToFollow)
+        {
+            //Move after the ComponentToFollow taking into account the axisLocked variables.
+            FVector FollowLocation = ComponentToFollow->GetComponentLocation();
+            FVector LocationDifference = FollowLocation - LastFollowPosition;
+            XMovement = LocationDifference.X * AxisLocked.X;
+            YMovement = LocationDifference.Y * AxisLocked.Y;
+            ZMovement = LocationDifference.Z * AxisLocked.Z;
+            CurrentLocation = CurrentLocation + FVector(XMovement, YMovement, ZMovement);
 
-        FVector FollowLocation = ComponentToFollow->GetComponentLocation();
-        FVector LocationDifference = FollowLocation - CurrentLocation;
-        XMovement = LocationDifference.X * AxisLocked.X;
-        YMovement = LocationDifference.Y * AxisLocked.Y;
-        ZMovement = LocationDifference.Z * AxisLocked.Z;
+        }
+        if (ShouldUseMovementLocked && ComponentToFollow)
+        {
 
-
-
+            FVector FollowLocation = ComponentToFollow->GetComponentLocation();
+            FVector LocationDifference = CurrentLocation - OriginalPosition;
+            FVector TestLocation = CurrentLocation + FVector(XMovement, YMovement, ZMovement);
+            FVector OriginalToTest = TestLocation - OriginalPosition;
+            if (abs(OriginalToTest.X) > MovementLocked.X)
+            {
+                if (OriginalToTest.X < 0.0f)
+                {
+                    float CurrentX = CurrentLocation.X;
+                    float MaxX = OriginalPosition.X - MovementLocked.X;
+                    float MovementToTarget = MaxX - CurrentX;
+                    XMovement = MovementToTarget;
+                }
+                else
+                {
+                    float CurrentX = CurrentLocation.X;
+                    float MaxX = OriginalPosition.X + MovementLocked.X;
+                    float MovementToTarget = MaxX - CurrentX;
+                    XMovement = MovementToTarget;
+                }
+            }
+            if (abs(OriginalToTest.Y) > MovementLocked.Y)
+            {
+                if (OriginalToTest.Y < 0.0f)
+                {
+                    float CurrentY = CurrentLocation.Y;
+                    float MaxY = OriginalPosition.Y - MovementLocked.Y;
+                    float MovementToTarget = MaxY - CurrentY;
+                    YMovement = MovementToTarget;
+                }
+                else
+                {
+                    float CurrentY = CurrentLocation.Y;
+                    float MaxY = OriginalPosition.Y + MovementLocked.Y;
+                    float MovementToTarget = MaxY - CurrentY;
+                    YMovement = MovementToTarget;
+                }
+            }
+            if (abs(OriginalToTest.Y) > MovementLocked.Y)
+            {
+                if (OriginalToTest.Z < 0.0f)
+                {
+                    float CurrentZ = CurrentLocation.Z;
+                    float MaxZ = OriginalPosition.Z - MovementLocked.Z;
+                    float MovementToTarget = MaxZ - CurrentZ;
+                    ZMovement = MovementToTarget;
+                }
+                else
+                {
+                    float CurrentZ = CurrentLocation.Z;
+                    float MaxZ = OriginalPosition.Z + MovementLocked.Z;
+                    float MovementToTarget = MaxZ - CurrentZ;
+                    ZMovement = MovementToTarget;
+                }
+            }
+        }
+        FVector NewLocation = CurrentLocation + FVector(XMovement, YMovement, ZMovement);
+        //UE_LOG(LogClass, Log, TEXT("New X, New Y, New Z"), i, *ActorName);
+        SetActorLocation(NewLocation);
+        LastFollowPosition = ComponentToFollow->GetComponentLocation();
     }
-    if (ShouldUseMovementLocked && ComponentToFollow)
-    {
-        
-        FVector FollowLocation = ComponentToFollow->GetComponentLocation();
-        FVector LocationDifference = CurrentLocation - OriginalPosition;
-        FVector TestLocation = CurrentLocation + FVector(XMovement, YMovement, ZMovement);
-        FVector OriginalToTest = TestLocation - OriginalPosition;
-        if (abs(OriginalToTest.X) > MovementLocked.X)
-        {
-            if (OriginalToTest.X < 0.0f)
-            {
-                float CurrentX = CurrentLocation.X;
-                float MaxX = OriginalPosition.X - MovementLocked.X;
-                float MovementToTarget = MaxX - CurrentX;
-                XMovement = MovementToTarget;
-            }
-            else
-            {
 
-            }
-        }
-        if (abs(OriginalToTest.Y) > MovementLocked.Y)
-        {
-            if (OriginalToTest.Y < 0.0f)
-            {
-                float CurrentY = CurrentLocation.Y;
-                float MaxY = OriginalPosition.Y - MovementLocked.Y;
-                float MovementToTarget = MaxY - CurrentY;
-                YMovement = MovementToTarget;
-            }
-            else
-            {
-                float CurrentY = CurrentLocation.Y;
-                float MaxY = OriginalPosition.Y + MovementLocked.Y;
-                float MovementToTarget = MaxY - CurrentY;
-                YMovement = MovementToTarget;
-            }
-        }
-        if (abs(OriginalToTest.Y) > MovementLocked.Y)
-        {
-            if (OriginalToTest.Z < 0.0f)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
-
-    }
-    FVector NewLocation = CurrentLocation + FVector(XMovement, YMovement, ZMovement);
-    UE_LOG(LogClass, Log, TEXT("New X, New Y, New Z"), i, *ActorName);
-    SetActorLocation(NewLocation);
 }
 
 bool AProjectOrionGrabbable::GrabbedBy(class USceneComponent* componentToAttachTo)
@@ -108,6 +121,7 @@ bool AProjectOrionGrabbable::GrabbedBy(class USceneComponent* componentToAttachT
     {
         Attached = true;
         ComponentToFollow = componentToAttachTo;
+        LastFollowPosition = componentToAttachTo->GetComponentLocation();
         return true;
     }
 

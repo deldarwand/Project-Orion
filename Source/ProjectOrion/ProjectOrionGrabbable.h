@@ -29,6 +29,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
     bool ShouldUseMovementLocked;
     
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
+    bool NegativeLock;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
+    FVector AxisLocked;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
+    FVector MovementLocked;
+
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* GrabMesh;
@@ -38,9 +47,10 @@ private:
 
     class USceneComponent* ComponentToFollow;
 
-    FVector AxisLocked;
-    FVector MovementLocked;
+
+    FVector LastFollowPosition;
     bool RotationLocked;
+    
 
     bool Attached;
 
