@@ -27,14 +27,18 @@ AProjectOrionRadio::AProjectOrionRadio()
 void AProjectOrionRadio::BeginPlay()
 {
 	Super::BeginPlay();
-    //Start the radio audio playing at 30 seconds in.
-    RadioAudioComponent->Play(30.0f);
 }
 
 // Called every frame
-void AProjectOrionRadio::Tick( float DeltaTime )
+void AProjectOrionRadio::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+    Super::Tick(DeltaTime);
+    if (RadioAudioComponent && !RadioAudioComponent->IsPlaying())
+    {
+        //Start the radio audio playing at 30 seconds in.
+        RadioAudioComponent->Play(30.0f);
+    }
+
     TArray<AActor*> OverlappingActors;
     RadioInteractionCapsule->GetOverlappingActors(OverlappingActors);
 

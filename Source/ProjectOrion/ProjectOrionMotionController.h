@@ -28,21 +28,6 @@ public:
     bool GrabComponent();
     bool ReleaseComponent();
 
-    void ToggleBoolean(bool* booleanToToggle);
-	void ToggleMoveRight();
-	void ToggleMoveLeft();
-	void ToggleMoveForward();
-	void ToggleMoveBack();
-	void ToggleMoveUp();
-	void ToggleMoveDown();
-
-	void ToggleXRotation();
-	void ToggleYRotation();
-	void ToggleZRotation();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Motion Simulation", meta = (AllowPrivateAccess = "true"))
-	bool ShouldBeSimulated;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grab Sphere Size", meta = (AllowPrivateAccess = "true"))
     float GrabSphereSize = 50.0f;
 
@@ -64,10 +49,7 @@ public:
 
 private:
     UAudioComponent* PhoneAudioComponent;
-	FVector ControllerPosition, TranslationSpeedVector;
-	FRotator ControllerOrientation, RotationSpeedRotator;
-	bool ShouldMoveLeft, ShouldMoveRight, ShouldMoveForward, ShouldMoveBack, ShouldMoveUp, ShouldMoveDown;
-	bool ShouldRotateAroundX, ShouldRotateAroundY, ShouldRotateAroundZ;
+	
     class AProjectOrionGrabbable* ComponentGrabbed;
 
 	bool PollControllerState(FVector& Position, FRotator& Orientation);

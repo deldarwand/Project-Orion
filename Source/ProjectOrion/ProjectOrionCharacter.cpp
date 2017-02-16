@@ -99,7 +99,7 @@ void AProjectOrionCharacter::BeginPlay()
     }
     
     TArray<UActorComponent*> ArrayOfPhoneComponents = this->GetComponentsByClass(UProjectOrionPhoneSceneComponent::StaticClass());
-    for (int i = 0; i < ArrayOfMotionControllers.Num(); i++)
+    for (int i = 0; i < ArrayOfPhoneComponents.Num(); i++)
     {
         UProjectOrionPhoneSceneComponent* const Phone = Cast<UProjectOrionPhoneSceneComponent>(ArrayOfPhoneComponents[i]);
         if (Phone)
@@ -146,45 +146,8 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	//Add the interaction keypressed
-	InputComponent->BindAction("Interact", IE_Pressed, this, &AProjectOrionCharacter::SceneInteract);
-
-	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AProjectOrionCharacter::TouchStarted);
-	if (EnableTouchscreenMovement(InputComponent) == false)
-	{
-		InputComponent->BindAction("Fire", IE_Pressed, this, &AProjectOrionCharacter::OnFire);
-	}
-
 	InputComponent->BindAxis("MoveForward", this, &AProjectOrionCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AProjectOrionCharacter::MoveRight);
-
-	// Binds all of the motion controller toggles to the functions that will allow the movement and rotation to be set.
-	InputComponent->BindAction("MoveMotionControllerLeft", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionLeft);
-	InputComponent->BindAction("MoveMotionControllerLeft", IE_Released, this, &AProjectOrionCharacter::ToggleMotionLeft);
-
-	InputComponent->BindAction("MoveMotionControllerRight", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionRight);
-	InputComponent->BindAction("MoveMotionControllerRight", IE_Released, this, &AProjectOrionCharacter::ToggleMotionRight);
-
-	InputComponent->BindAction("MoveMotionControllerForward", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionForward);
-	InputComponent->BindAction("MoveMotionControllerForward", IE_Released, this, &AProjectOrionCharacter::ToggleMotionForward);
-
-	InputComponent->BindAction("MoveMotionControllerBack", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionBack);
-	InputComponent->BindAction("MoveMotionControllerBack", IE_Released, this, &AProjectOrionCharacter::ToggleMotionBack);
-
-	InputComponent->BindAction("MoveMotionControllerUp", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionUp);
-	InputComponent->BindAction("MoveMotionControllerUp", IE_Released, this, &AProjectOrionCharacter::ToggleMotionUp);
-
-	InputComponent->BindAction("MoveMotionControllerDown", IE_Pressed, this, &AProjectOrionCharacter::ToggleMotionDown);
-	InputComponent->BindAction("MoveMotionControllerDown", IE_Released, this, &AProjectOrionCharacter::ToggleMotionDown);
-
-	InputComponent->BindAction("RotateControllerAroundX", IE_Pressed, this, &AProjectOrionCharacter::ToggleXRotation);
-	InputComponent->BindAction("RotateControllerAroundX", IE_Released, this, &AProjectOrionCharacter::ToggleXRotation);
-
-	InputComponent->BindAction("RotateControllerAroundY", IE_Pressed, this, &AProjectOrionCharacter::ToggleYRotation);
-	InputComponent->BindAction("RotateControllerAroundY", IE_Released, this, &AProjectOrionCharacter::ToggleYRotation);
-
-	InputComponent->BindAction("RotateControllerAroundZ", IE_Pressed, this, &AProjectOrionCharacter::ToggleZRotation);
-	InputComponent->BindAction("RotateControllerAroundZ", IE_Released, this, &AProjectOrionCharacter::ToggleZRotation);
 
     InputComponent->BindAction("GrabRight", IE_Pressed, this, &AProjectOrionCharacter::GrabRight);
     InputComponent->BindAction("GrabRight", IE_Released, this, &AProjectOrionCharacter::ReleaseRight);
@@ -225,170 +188,6 @@ void AProjectOrionCharacter::ReleaseLeft()
     UE_LOG(LogTemp, Warning, TEXT("Left Releasing"));
 }
 
-void AProjectOrionCharacter::ToggleXRotation()
-{
-	LeftHandMotionController->ToggleXRotation();
-}
-
-void AProjectOrionCharacter::ToggleYRotation()
-{
-	LeftHandMotionController->ToggleYRotation();
-}
-
-void AProjectOrionCharacter::ToggleZRotation()
-{
-	LeftHandMotionController->ToggleZRotation();
-}
-
-void AProjectOrionCharacter::ToggleMotionLeft()
-{
-	LeftHandMotionController->ToggleMoveLeft();
-}
-
-void AProjectOrionCharacter::ToggleMotionRight()
-{
-	LeftHandMotionController->ToggleMoveRight();
-}
-
-void AProjectOrionCharacter::ToggleMotionForward()
-{
-	LeftHandMotionController->ToggleMoveForward();
-}
-
-void AProjectOrionCharacter::ToggleMotionBack()
-{
-	LeftHandMotionController->ToggleMoveBack();
-}
-
-void AProjectOrionCharacter::ToggleMotionUp()
-{
-	LeftHandMotionController->ToggleMoveUp();
-}
-
-void AProjectOrionCharacter::ToggleMotionDown()
-{
-	LeftHandMotionController->ToggleMoveDown();
-}
-
-void AProjectOrionCharacter::SceneInteract()
-{
-	UE_LOG(LogTemp, Warning, TEXT("You pressed the interact button"));
-	
-	TArray<AActor*> InteractableActors;
-	InteractionSphere->GetOverlappingActors(InteractableActors);
-
-	UE_LOG(LogTemp, Warning, TEXT("The number of intersected objects is : %i"), InteractableActors.Num());
-
-	for (int i = 0; i < InteractableActors.Num(); i++)
-	{
-		ADoor* const currentDoor = Cast<ADoor>(InteractableActors[i]);
-		if (currentDoor)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Went into door"));
-			if (!currentDoor->IsPendingKill())
-			{
-				currentDoor->Destroy();
-			}
-		}
-	}
-}
-
-void AProjectOrionCharacter::OnFire()
-{
-	// try and fire a projectile
-	if (ProjectileClass != NULL)
-	{
-		const FRotator SpawnRotation = GetControlRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<AProjectOrionProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-		}
-	}
-
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-
-}
-
-void AProjectOrionCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == true)
-	{
-		return;
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
-
-void AProjectOrionCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
-	{
-		OnFire();
-	}
-	TouchItem.bIsPressed = false;
-}
-
-void AProjectOrionCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
-	{
-		if (TouchItem.bIsPressed)
-		{
-			if (GetWorld() != nullptr)
-			{
-				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-				if (ViewportClient != nullptr)
-				{
-					FVector MoveDelta = Location - TouchItem.Location;
-					FVector2D ScreenSize;
-					ViewportClient->GetViewportSize(ScreenSize);
-					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
-					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
-					{
-						TouchItem.bMoved = true;
-						float Value = ScaledDelta.X * BaseTurnRate;
-						AddControllerYawInput(Value);
-					}
-					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
-					{
-						TouchItem.bMoved = true;
-						float Value = ScaledDelta.Y * BaseTurnRate;
-						AddControllerPitchInput(Value);
-					}
-					TouchItem.Location = Location;
-				}
-				TouchItem.Location = Location;
-			}
-		}
-	}
-}
-
 void AProjectOrionCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
@@ -417,17 +216,4 @@ void AProjectOrionCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
-bool AProjectOrionCharacter::EnableTouchscreenMovement(class UInputComponent* InputComponent)
-{
-	bool bResult = false;
-	if (FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch)
-	{
-		bResult = true;
-		InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AProjectOrionCharacter::BeginTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Released, this, &AProjectOrionCharacter::EndTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AProjectOrionCharacter::TouchUpdate);
-	}
-	return bResult;
 }

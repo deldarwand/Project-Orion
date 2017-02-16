@@ -13,15 +13,6 @@ UProjectOrionMotionController::UProjectOrionMotionController()
     PlayerIndex = 0;
 
     bDisableLowLatencyUpdate = false;
-    
-    /** Start of the initialisation of variables for the Keyboard Motion Controller Simulation */
-    ShouldMoveLeft = ShouldMoveRight = ShouldMoveForward = ShouldMoveBack = ShouldMoveUp = ShouldMoveDown = false;
-    ShouldRotateAroundX = ShouldRotateAroundY = ShouldRotateAroundZ = false;
-    TranslationSpeedVector = FVector(50.0f);
-
-    ControllerPosition = FVector(0.0f);
-    ControllerOrientation = FRotator(0.0f);
-    RotationSpeedRotator = FRotator(50.0f, 50.0f, 50.0f);
     /** End of the initialisation of variables for the Keyboard Motion Controller Simulation */
 
     /** Start of the Grab Functionality Initialisation */
@@ -56,75 +47,6 @@ void UProjectOrionMotionController::BeginPlay()
         IsPhoneHand = false;
         UE_LOG(LogClass, Log, TEXT("DIDN'T FIND the audio component in the hand"));
     }
-}
-
-void UProjectOrionMotionController::ToggleBoolean(bool* booleanToToggle)
-{
-    *booleanToToggle = !(*booleanToToggle);
-}
-
-void UProjectOrionMotionController::ToggleMoveLeft()
-{
-	ShouldMoveLeft = !ShouldMoveLeft;
-}
-
-void UProjectOrionMotionController::ToggleMoveRight()
-{
-	ShouldMoveRight = !ShouldMoveRight;
-}
-
-void UProjectOrionMotionController::ToggleMoveForward()
-{
-	ShouldMoveForward = !ShouldMoveForward;
-}
-
-void UProjectOrionMotionController::ToggleMoveBack()
-{
-	ShouldMoveBack = !ShouldMoveBack;
-}
-
-void UProjectOrionMotionController::ToggleMoveUp()
-{
-	ShouldMoveUp = !ShouldMoveUp;
-}
-
-void UProjectOrionMotionController::ToggleMoveDown()
-{
-	ShouldMoveDown = !ShouldMoveDown;
-}
-
-
-
-void UProjectOrionMotionController::ToggleXRotation()
-{
-	ShouldRotateAroundX = !ShouldRotateAroundX;
-}
-
-void UProjectOrionMotionController::ToggleYRotation()
-{
-	ShouldRotateAroundY = !ShouldRotateAroundY;	
-}
-
-void UProjectOrionMotionController::ToggleZRotation()
-{
-	ShouldRotateAroundZ = !ShouldRotateAroundZ;
-}
-
-void UProjectOrionMotionController::TranslateController(FVector TranslationVector)
-{
-    ControllerPosition += TranslationVector;
-}
-
-void UProjectOrionMotionController::RotateController(FRotator RotationRotator)
-{
-	ControllerOrientation += RotationRotator;
-}
-
-bool UProjectOrionMotionController::PollControllerState(FVector& Position, FRotator& Orientation)
-{
-	Position = ControllerPosition;
-	Orientation = ControllerOrientation;
-	return true;
 }
 
 bool UProjectOrionMotionController::GrabComponent()
@@ -181,76 +103,12 @@ void UProjectOrionMotionController::TickComponent(float DeltaTime, enum ELevelTi
         }
         else if(!IsPlaying)
         {
-            UE_LOG(LogClass, Warning, TEXT("Start playing please."));
-            /*     if (IntroductionAudio)
-            {
-            PhoneAudioComponent->Activate();
-            PhoneAudioComponent->SetSound(IntroductionAudio);
-
-            }*/
+            UE_LOG(LogClass, Warning, TEXT("Start playing."));
             PhoneAudioComponent->Play();
             
         }
     }
-	if (!ShouldBeSimulated)
-	{
-		UMotionControllerComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
-		return;
-	}
-    
-	FVector Position = FVector(0.0f);
-	FRotator Orientation;
-	FVector DeltaMovement = TranslationSpeedVector * DeltaTime;
-	FRotator DeltaRotation = RotationSpeedRotator* DeltaTime;
-	FVector TranslationVector = FVector(0.0f);
-
-	if (ShouldMoveLeft)
-	{
-		TranslationVector.Y -= DeltaMovement.Y;
-	}
-	if (ShouldMoveRight)
-	{
-		TranslationVector.Y += DeltaMovement.Y;
-	}
-	if (ShouldMoveForward)
-	{
-		TranslationVector.X -= DeltaMovement.X;
-	}
-	if (ShouldMoveBack)
-	{
-		TranslationVector.X += DeltaMovement.X;
-	}
-	if (ShouldMoveDown)
-	{
-		TranslationVector.Z -= DeltaMovement.Z;
-	}
-	if (ShouldMoveUp)
-	{
-		TranslationVector.Z += DeltaMovement.Z;
-	}
-
-	FRotator RotationRotator = FRotator(0.0f);
-	if (ShouldRotateAroundX)
-	{
-		RotationRotator.Roll += DeltaRotation.Roll;
-	}
-	if (ShouldRotateAroundY)
-	{
-		RotationRotator.Pitch += DeltaRotation.Pitch;
-	}
-	if (ShouldRotateAroundZ)
-	{
-		RotationRotator.Yaw += DeltaRotation.Yaw;
-	}
-
-	RotateController(RotationRotator);
-	TranslateController(TranslationVector);
-
-	bool bTracked = PollControllerState(Position, Orientation);
-	if (bTracked)
-	{
-		SetRelativeLocationAndRotation(Position, Orientation);
-	}
+    UMotionControllerComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 
