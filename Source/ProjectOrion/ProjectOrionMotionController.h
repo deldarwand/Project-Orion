@@ -54,6 +54,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Phone", meta = (AllowPrivateAccess = "true"))
     bool IsPhoneHand;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Phone Audio")
+    class USoundBase* IntroductionAudio;
+
+
     friend class AProjectOrionCharacter;
 
     void BeginPlay();

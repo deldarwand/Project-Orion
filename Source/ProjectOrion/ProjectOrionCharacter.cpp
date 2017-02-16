@@ -7,6 +7,7 @@
 #include "GameFramework/InputSettings.h"
 #include "Door.h"
 #include "ProjectOrionMotionController.h"
+#include "ProjectOrionPhoneSceneComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -85,9 +86,6 @@ void AProjectOrionCharacter::BeginPlay()
     for (int i = 0; i < ArrayOfMotionControllers.Num(); i++)
     {
         UProjectOrionMotionController* const MotionController = Cast<UProjectOrionMotionController>(ArrayOfMotionControllers[i]);
-     /*   if (MotionController->Hand == EControllerHand::Left) LeftHandMotionController = MotionController;
-        if (MotionController->Hand == EControllerHand::Right) RightHandMotionController = MotionController;
-        if (MotionController->Hand == EControllerHand::Pad) UE_LOG(LogTemp, Warning, TEXT("DIE"));*/
         if (i == 0)
         {
             MotionController->Hand = EControllerHand::Left;
@@ -98,9 +96,24 @@ void AProjectOrionCharacter::BeginPlay()
             MotionController->Hand = EControllerHand::Right;
             RightHandMotionController = MotionController;
         }
-
     }
     
+    TArray<UActorComponent*> ArrayOfMotionControllers = this->GetComponentsByClass(UProjectOrionPhoneSceneComponent::StaticClass());
+    for (int i = 0; i < ArrayOfMotionControllers.Num(); i++)
+    {
+        UProjectOrionMotionController* const MotionController = Cast<UProjectOrionMotionController>(ArrayOfMotionControllers[i]);
+        if (i == 0)
+        {
+            MotionController->Hand = EControllerHand::Left;
+            LeftHandMotionController = MotionController;
+        }
+        if (i == 1)
+        {
+            MotionController->Hand = EControllerHand::Right;
+            RightHandMotionController = MotionController;
+        }
+    }
+
     if (ArrayOfMotionControllers.Num() == 2)
     {
         UE_LOG(LogTemp, Warning, TEXT("FOUND 2 Motion Controllers"));

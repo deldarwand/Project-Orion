@@ -39,6 +39,9 @@ class AProjectOrionCharacter : public ACharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Tracked Movement", meta = (AllowPrivateAccess = "true"))
     class UProjectOrionMotionController* RightHandMotionController;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Phone")
+    class UProjectOrionPhoneSceneComponent* PhoneComponent;
+
 public:
 	AProjectOrionCharacter();
 

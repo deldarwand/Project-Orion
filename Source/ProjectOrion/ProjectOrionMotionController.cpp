@@ -170,23 +170,34 @@ bool UProjectOrionMotionController::ReleaseComponent()
 
 void UProjectOrionMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
+    if (PhoneAudioComponent)
+    {
+        bool IsPlaying = PhoneAudioComponent->IsPlaying();
+        if (IsPlaying && PhoneAudioComponent->Sound != IntroductionAudio)
+        {
+            UE_LOG(LogClass, Warning, TEXT("Not intro sound being played."));
+            PhoneAudioComponent->Stop();
+            PhoneAudioComponent->SetSound(IntroductionAudio);
+        }
+        else if(!IsPlaying)
+        {
+            UE_LOG(LogClass, Warning, TEXT("Start playing please."));
+            /*     if (IntroductionAudio)
+            {
+            PhoneAudioComponent->Activate();
+            PhoneAudioComponent->SetSound(IntroductionAudio);
+
+            }*/
+            PhoneAudioComponent->Play();
+            
+        }
+    }
 	if (!ShouldBeSimulated)
 	{
 		UMotionControllerComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
 		return;
 	}
-    if (PhoneAudioComponent)
-    {
-        bool IsPlaying = PhoneAudioComponent->IsPlaying();
-        if (IsPlaying)
-        {
-
-        }
-        else
-        {
-            PhoneAudioComponent->Play();
-        }
-    }
+    
 	FVector Position = FVector(0.0f);
 	FRotator Orientation;
 	FVector DeltaMovement = TranslationSpeedVector * DeltaTime;
