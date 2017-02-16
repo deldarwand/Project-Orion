@@ -98,19 +98,14 @@ void AProjectOrionCharacter::BeginPlay()
         }
     }
     
-    TArray<UActorComponent*> ArrayOfMotionControllers = this->GetComponentsByClass(UProjectOrionPhoneSceneComponent::StaticClass());
+    TArray<UActorComponent*> ArrayOfPhoneComponents = this->GetComponentsByClass(UProjectOrionPhoneSceneComponent::StaticClass());
     for (int i = 0; i < ArrayOfMotionControllers.Num(); i++)
     {
-        UProjectOrionMotionController* const MotionController = Cast<UProjectOrionMotionController>(ArrayOfMotionControllers[i]);
-        if (i == 0)
+        UProjectOrionPhoneSceneComponent* const Phone = Cast<UProjectOrionPhoneSceneComponent>(ArrayOfPhoneComponents[i]);
+        if (Phone)
         {
-            MotionController->Hand = EControllerHand::Left;
-            LeftHandMotionController = MotionController;
-        }
-        if (i == 1)
-        {
-            MotionController->Hand = EControllerHand::Right;
-            RightHandMotionController = MotionController;
+            PhoneComponent = Phone;
+            UE_LOG(LogTemp, Warning, TEXT("Found the phone component"));
         }
     }
 

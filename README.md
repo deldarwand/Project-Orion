@@ -13,3 +13,4 @@ Artek table - https://www.turbosquid.com/FullPreview/Index.cfm/ID/751460
 Fridhem sofa - https://www.turbosquid.com/FullPreview/Index.cfm/ID/420202
 Floor Tiles - https://www.turbosquid.com/FullPreview/Index.cfm/ID/1072380
 Cabinet - http://www.blendswap.com/blends/view/66864
+Radio - http://www.blendswap.com/blends/view/49116
