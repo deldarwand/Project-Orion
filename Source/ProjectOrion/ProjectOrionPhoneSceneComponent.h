@@ -33,6 +33,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Haptic Feedback")
     bool ShouldProduceHaptic;
 
+    void AnswerPhone();
+
 private:
     enum PhoneState CurrentPhoneState;
     float TimeToWait;

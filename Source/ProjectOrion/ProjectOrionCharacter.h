@@ -111,6 +111,8 @@ protected:
     /** Called when user wants to let go of object with left hand*/
     void ReleaseLeft();
 
+    void AnswerPhone();
+
 	struct TouchData
 	{
 		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}

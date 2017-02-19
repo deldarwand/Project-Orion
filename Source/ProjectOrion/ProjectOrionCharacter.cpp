@@ -155,6 +155,8 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
     InputComponent->BindAction("GrabLeft", IE_Pressed, this, &AProjectOrionCharacter::GrabLeft);
     InputComponent->BindAction("GrabLeft", IE_Released, this, &AProjectOrionCharacter::ReleaseLeft);
 
+    InputComponent->BindAction("AnswerPhone", IE_Pressed, this, &AProjectOrionCharacter::AnswerPhone);
+
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
@@ -162,6 +164,13 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAxis("TurnRate", this, &AProjectOrionCharacter::TurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	InputComponent->BindAxis("LookUpRate", this, &AProjectOrionCharacter::LookUpAtRate);
+    
+}
+
+void AProjectOrionCharacter::AnswerPhone()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Answered the phone."));
+    PhoneComponent->AnswerPhone();
 }
 
 void AProjectOrionCharacter::GrabRight()

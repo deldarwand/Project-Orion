@@ -42,14 +42,14 @@ void AProjectOrionRadio::Tick(float DeltaTime)
     TArray<AActor*> OverlappingActors;
     RadioInteractionCapsule->GetOverlappingActors(OverlappingActors);
 
-    UE_LOG(LogTemp, Warning, TEXT("The number of intersected objects is : %i"), OverlappingActors.Num());
+   // UE_LOG(LogTemp, Warning, TEXT("The number of intersected objects is : %i"), OverlappingActors.Num());
 
     for (int i = 0; i < OverlappingActors.Num(); i++)
     {
         AProjectOrionCharacter* const ProjectOrionCharacter = Cast<AProjectOrionCharacter>(OverlappingActors[i]);
         if (ProjectOrionCharacter)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Touching the radio"));
+          //  UE_LOG(LogTemp, Warning, TEXT("Touching the radio"));
             RadioAudioComponent->Stop();
         }
     }

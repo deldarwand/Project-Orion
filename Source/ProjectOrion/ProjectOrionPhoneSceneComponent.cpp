@@ -54,6 +54,10 @@ void UProjectOrionPhoneSceneComponent::BeginPlay()
 	
 }
 
+void UProjectOrionPhoneSceneComponent::AnswerPhone()
+{
+    CurrentPhoneState = PhoneState::Introduction;
+}
 
 // Called every frame
 void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
