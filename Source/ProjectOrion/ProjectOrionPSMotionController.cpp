@@ -11,7 +11,6 @@ UProjectOrionPSMotionController::UProjectOrionPSMotionController()
     PrimaryComponentTick.TickGroup = TG_PrePhysics;
 
     PlayerIndex = 0;
-    Hand = EControllerHand::Pad;
     bDisableLowLatencyUpdate = false;
 }
 
@@ -34,5 +33,7 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 bool UProjectOrionPSMotionController::PollControllerState(FVector& Position, FRotator& Orientation)
 {
     // Use the PhaseSpace library to get position and rotation for the controller.
+    Position = GetComponentLocation();
+    Orientation = GetComponentRotation();
     return true;
 }

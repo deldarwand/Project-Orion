@@ -21,16 +21,10 @@ class PROJECTORION_API UProjectOrionPSMotionController : public UMotionControlle
 
 public:
 
-    enum EControllerLeg Leg;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Motion Controller")
+    bool IsLeg;
 
 private:
     bool PollControllerState(FVector& Position, FRotator& Orientation);
 	
-	
-};
-
-enum EControllerLeg
-{
-    Left,
-    Right
 };
