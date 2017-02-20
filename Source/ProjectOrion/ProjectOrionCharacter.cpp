@@ -8,6 +8,7 @@
 #include "Door.h"
 #include "ProjectOrionMotionController.h"
 #include "ProjectOrionPhoneSceneComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -225,4 +226,25 @@ void AProjectOrionCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera)
+{
+    FVector StartLocation = Camera->GetComponentLocation();
+    FVector ScaledForwardVector = 1500.0f * Camera->GetForwardVector();
+
+    FVector EndLocation = StartLocation + ScaledForwardVector;
+    FHitResult Hit(ForceInit);
+    TArray<AActor*> ActorsToIgnore;
+    if (UKismetSystemLibrary::LineTraceSingle_NEW(this,
+        StartLocation,
+        EndLocation,
+        UEngineTypes::ConvertToTraceType(ECC_Camera),
+        false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, Hit, true))
+    {
+        //There was a hit reported.
+        UE_LOG(LogTemp, Warning, TEXT("Hit an actor: %s that far away: %f"), *Hit.Actor->GetName(), Hit.Distance);
+    }
+    
+
 }

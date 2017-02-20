@@ -49,6 +49,9 @@ public:
 
     virtual void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult);
 
+    UFUNCTION(BlueprintCallable, Category = "RayCast")
+    void RayCastTick(UCameraComponent* Camera);
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -74,9 +77,6 @@ public:
 	class UAnimMontage* FireAnimation;
 
 protected:
-	
-	/** Fires a projectile. */
-	void OnFire();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -95,9 +95,6 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
-
-	/** Called when the interact button is pressed */
-	void SceneInteract();
 
     /** Called when user wants to grab object with right hand*/
     void GrabRight();
@@ -121,9 +118,7 @@ protected:
 		FVector Location;
 		bool bMoved;
 	};
-	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
+
 	TouchData	TouchItem;
 	
 protected:
