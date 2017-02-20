@@ -76,6 +76,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
 
+    void RadioTouched();
+
 protected:
 
 	/** Handles moving forward/backward */

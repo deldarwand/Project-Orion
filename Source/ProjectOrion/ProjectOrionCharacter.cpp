@@ -248,3 +248,9 @@ void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera)
     
 
 }
+
+void AProjectOrionCharacter::RadioTouched()
+{
+    UE_LOG(LogTemp, Warning, TEXT("The radio player is touched. Should now play the thank you audio."));
+    PhoneComponent->SetState(PhoneState::ThanksRadio);
+}

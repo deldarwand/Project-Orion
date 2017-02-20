@@ -20,6 +20,7 @@ AProjectOrionRadio::AProjectOrionRadio()
     RadioInteractionCapsule->SetCapsuleRadius(25.0f);
 
     RadioStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("RadioStaticMesh");
+    TurnedOff = false;
 
 }
 
@@ -33,7 +34,7 @@ void AProjectOrionRadio::BeginPlay()
 void AProjectOrionRadio::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if (RadioAudioComponent && !RadioAudioComponent->IsPlaying())
+    if (RadioAudioComponent && !RadioAudioComponent->IsPlaying() && !TurnedOff)
     {
         //Start the radio audio playing at 30 seconds in.
         RadioAudioComponent->Play(30.0f);
@@ -50,7 +51,15 @@ void AProjectOrionRadio::Tick(float DeltaTime)
         if (ProjectOrionCharacter)
         {
           //  UE_LOG(LogTemp, Warning, TEXT("Touching the radio"));
-            RadioAudioComponent->Stop();
+            if (!TurnedOff)
+            {
+                TurnedOff = true;
+                RadioAudioComponent->Stop();
+                if (PlayerCharacter)
+                {
+                    PlayerCharacter->RadioTouched();
+                }
+            }
         }
     }
 }

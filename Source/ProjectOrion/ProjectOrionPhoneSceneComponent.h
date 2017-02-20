@@ -30,10 +30,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
     class USoundBase* IntroductionAudio;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
+    class USoundBase* RadioThanksAudio;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Haptic Feedback")
     bool ShouldProduceHaptic;
 
     void AnswerPhone();
+
+    void SetState(enum PhoneState NewState);
 
 private:
     enum PhoneState CurrentPhoneState;
@@ -46,7 +51,8 @@ enum PhoneState
     Calling,
     Introduction,
     Radio,
-    ThanksRadio
+    ThanksRadio,
+    NextAudio
 };
 
 		

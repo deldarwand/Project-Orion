@@ -73,6 +73,11 @@ void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTic
         ShouldProduceHaptic = false;
     }
 
+    if (PhoneAudioComponent->Sound != IntroductionAudio && PhoneAudioComponent->Sound != RadioThanksAudio && PhoneAudioComponent->IsPlaying())
+    {
+        PhoneAudioComponent->Stop();
+    }
+
     switch ((int)CurrentPhoneState)
     {
 
@@ -86,9 +91,31 @@ void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTic
         }
         break;
     }
+
+    case PhoneState::ThanksRadio:
+    {
+        if (RadioThanksAudio && !PhoneAudioComponent->IsPlaying())
+        {
+            PhoneAudioComponent->Activate();
+            PhoneAudioComponent->SetSound(RadioThanksAudio);
+            PhoneAudioComponent->Play();
+        }
+        break;
+    }
     default:
         break;
     }
 	// ...
 }
 
+void UProjectOrionPhoneSceneComponent::SetState(enum PhoneState NewState)
+{
+    if (NewState == PhoneState::NextAudio)
+    {
+        CurrentPhoneState = (enum PhoneState)((int)CurrentPhoneState+1);
+    }
+    else
+    {
+        CurrentPhoneState = NewState;
+    }
+}

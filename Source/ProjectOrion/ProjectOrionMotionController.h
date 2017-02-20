@@ -19,8 +19,6 @@ class PROJECTORION_API UProjectOrionMotionController : public UMotionControllerC
 	
 public:
 	UProjectOrionMotionController();
-	void TranslateController(FVector TranslationVector);
-	void RotateController(FRotator RotationRotator);
 
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
@@ -42,7 +40,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Phone Audio")
     class USoundBase* IntroductionAudio;
 
-
     friend class AProjectOrionCharacter;
 
     void BeginPlay();
@@ -51,7 +48,5 @@ private:
     UAudioComponent* PhoneAudioComponent;
 	
     class AProjectOrionGrabbable* ComponentGrabbed;
-
-	bool PollControllerState(FVector& Position, FRotator& Orientation);
 	
 };

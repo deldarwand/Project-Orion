@@ -98,13 +98,13 @@ void UProjectOrionMotionController::TickComponent(float DeltaTime, enum ELevelTi
         if (IsPlaying && PhoneAudioComponent->Sound != IntroductionAudio)
         {
             UE_LOG(LogClass, Warning, TEXT("Not intro sound being played."));
-            PhoneAudioComponent->Stop();
-            PhoneAudioComponent->SetSound(IntroductionAudio);
+        //    PhoneAudioComponent->Stop();
+       //     PhoneAudioComponent->SetSound(IntroductionAudio);
         }
         else if(!IsPlaying)
         {
             UE_LOG(LogClass, Warning, TEXT("Start playing."));
-            PhoneAudioComponent->Play();
+           // PhoneAudioComponent->Play();
             
         }
     }

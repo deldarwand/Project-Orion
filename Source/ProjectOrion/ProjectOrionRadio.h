@@ -32,6 +32,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radio Mesh")
     class UStaticMeshComponent* RadioStaticMesh;
 
-    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Phone Component")
+    class AProjectOrionCharacter* PlayerCharacter;
+private:
+    bool TurnedOff;
 
 };
