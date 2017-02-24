@@ -113,7 +113,23 @@ public:
 class PhaseSpaceTracker
 {
 
+private:
+
 public:
+	static PhaseSpaceTracker* currentInstance;
+	static PhaseSpaceTracker* instance()
+	{
+		if (!currentInstance)
+		{
+			std::string address = "128.16.8.253";
+			std::string filename = "C:\\Users\\localadmin\\Documents\\DanielEldar\\PhaseSpaceSingleID.json";
+			PhaseSpaceRigidBody* rigidbody = new PhaseSpaceRigidBody(filename);
+			currentInstance = new PhaseSpaceTracker(address, rigidbody);
+			currentInstance->Connect();
+		}
+		return currentInstance;
+	}
+
 	PhaseSpaceTracker(std::string Address, PhaseSpaceRigidBody* headrigidbody)
 	{
 		headRigidBody = headrigidbody;
@@ -337,5 +353,7 @@ private:
 
 
 };
+
+PhaseSpaceTracker* PhaseSpaceTracker::currentInstance = NULL;
 
 #endif /* PHASESPACETRACKER_HPP_ */
