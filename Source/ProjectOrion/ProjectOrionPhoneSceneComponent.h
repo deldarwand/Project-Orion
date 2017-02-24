@@ -27,6 +27,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
     class USoundAttenuation* PhoneAttenuation;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prompt Sounds")
+    class USoundBase* PromptOne;
+    
+    
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
     class USoundBase* IntroductionAudio;
 
@@ -40,10 +44,14 @@ public:
 
     void SetState(enum PhoneState NewState);
 
+    void PromptUser();
+
 private:
     enum PhoneState CurrentPhoneState;
     float TimeToWait;
     float WaitedFor;
+    bool ShouldPrompt, IsPrompting;
+    bool ShouldPlay;
 };
 
 enum PhoneState

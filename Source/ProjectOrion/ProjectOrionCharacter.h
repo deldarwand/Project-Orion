@@ -112,6 +112,9 @@ protected:
 
     void AnswerPhone();
 
+    void NextLine();
+    void PromptUser();
+
 	struct TouchData
 	{
 		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}

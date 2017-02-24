@@ -103,7 +103,7 @@ void UProjectOrionMotionController::TickComponent(float DeltaTime, enum ELevelTi
         }
         else if(!IsPlaying)
         {
-            UE_LOG(LogClass, Warning, TEXT("Start playing."));
+            //UE_LOG(LogClass, Warning, TEXT("Start playing."));
            // PhoneAudioComponent->Play();
             
         }

@@ -29,7 +29,7 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
     bool bTracked = PollControllerState(Position, Orientation);
     if (bTracked)
     {
-		UE_LOG(LogTemp, Warning, TEXT("Got location %s"), *Position.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Got location %s"), *Position.ToString());
         SetRelativeLocationAndRotation(Position, Orientation);
     }
 }
