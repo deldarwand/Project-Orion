@@ -23,11 +23,13 @@ void UProjectOrionPSMotionController::BeginPlay()
 
 void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
-    FVector Position;
+	LegTracker->Update();
+	FVector Position;
     FRotator Orientation;
     bool bTracked = PollControllerState(Position, Orientation);
     if (bTracked)
     {
+		UE_LOG(LogTemp, Warning, TEXT("Got location %s"), *Position.ToString());
         SetRelativeLocationAndRotation(Position, Orientation);
     }
 }

@@ -117,6 +117,7 @@ private:
 
 public:
 	static PhaseSpaceTracker* currentInstance;
+
 	static PhaseSpaceTracker* instance()
 	{
 		if (!currentInstance)
@@ -142,10 +143,11 @@ public:
 		address = Address;
 
 		flags = 0;
-
-		head_id = 0;
-		leftFoot_id = 25;
-		rightFoot_id = 38;
+		
+		
+		head_id = 10;
+		leftFoot_id = 0;
+		rightFoot_id = 62;
 
 		connected = false;
 		valid = false;
@@ -190,12 +192,15 @@ public:
 		headRigidBody->Create(owl);
 
 		/* Create some tracker using the markers so the server will look for them */
-
+		
 		owl.createTracker(1, "point", "lfoot", "");
-		owl.assignMarker(1, leftFoot_id, "25", "");
+		owl.assignMarker(1, leftFoot_id, "1", "");
 
-		owl.createTracker(2, "point", "rfoot", "");
-		owl.assignMarker(1, rightFoot_id, "38", "");
+		owl.createTracker(2, "point", "lfoot", "");
+		owl.assignMarker(2, rightFoot_id, "62", "");
+
+		//owl.createTracker(2, "point", "rfoot", "");
+		//owl.assignMarker(1, rightFoot_id, "38", "");
 
 		owl.streaming(1);
 	}
@@ -235,15 +240,15 @@ public:
 						{
 							if (m->id == leftFoot_id)
 							{
-								leftFoot[0] = m->x * 0.1f;
-								leftFoot[1] = m->y * 0.1f;
-								leftFoot[2] = m->z * 0.1f;
+								leftFoot[0] = m->x;// *0.1f;
+								leftFoot[1] = m->y;// *0.1f;
+								leftFoot[2] = m->z;// *0.1f;
 							}
 							if (m->id == rightFoot_id)
 							{
-								rightFoot[0] = m->x * 0.1f;
-								rightFoot[1] = m->y * 0.1f;
-								rightFoot[2] = m->z * 0.1f;
+								rightFoot[0] = m->x;
+								rightFoot[1] = m->y;
+								rightFoot[2] = m->z;// *0.1f;
 							}
 						}
 					}
