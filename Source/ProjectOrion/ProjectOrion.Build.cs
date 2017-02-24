@@ -7,6 +7,7 @@ public class ProjectOrion : ModuleRules
 	public ProjectOrion(TargetInfo Target)
 	{
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
-        PublicAdditionalLibraries.Add(@"C:\Users\localadmin\Documents\DanielEldar\Project-Orion\Binaries\Win64\libowlsock.lib");
+        string PhaseSpaceLibrary = System.IO.Path.GetFullPath(System.IO.Path.Combine(ModuleDirectory, "../../Binaries/Win64/libowlsock.lib"));
+        PublicAdditionalLibraries.Add(PhaseSpaceLibrary);
     }
 }

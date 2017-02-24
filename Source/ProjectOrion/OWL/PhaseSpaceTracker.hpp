@@ -46,24 +46,27 @@ public:
 	PhaseSpaceRigidBody(std::string filename)
 	{
 		FILE* f = fopen(filename.c_str(), "rb");
-		fseek(f, 0, SEEK_END);
-		long fsize = ftell(f);
-		fseek(f, 0, SEEK_SET);
+        if (f)
+        {
+            fseek(f, 0, SEEK_END);
+            long fsize = ftell(f);
+            fseek(f, 0, SEEK_SET);
 
-		json = (char*)malloc(fsize + 1);
-		jsonlength = fsize + 1;
-		fread((void*)json, fsize, 1, f);
-		json[fsize] = 0;
+            json = (char*)malloc(fsize + 1);
+            jsonlength = fsize + 1;
+            fread((void*)json, fsize, 1, f);
+            json[fsize] = 0;
 
-		fclose(f);
+            fclose(f);
 
-		Json::Value root;
-		Json::Reader reader;
+            Json::Value root;
+            Json::Reader reader;
 
-		reader.parse(json, json + jsonlength, root, false);
+            reader.parse(json, json + jsonlength, root, false);
 
-		Json::Value trackers = root["trackers"];
-		parseTracker(trackers); //use the first tracker
+            Json::Value trackers = root["trackers"];
+            parseTracker(trackers); //use the first tracker
+        }
 	}
 
 	~PhaseSpaceRigidBody()
