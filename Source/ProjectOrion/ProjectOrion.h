@@ -3,6 +3,8 @@
 #ifndef __PROJECTORION_H__
 #define __PROJECTORION_H__
 
+#define __STATICLIB
+
 #include "EngineMinimal.h"
 
 
