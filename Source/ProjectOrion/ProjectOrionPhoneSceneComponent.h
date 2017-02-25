@@ -40,7 +40,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Haptic Feedback")
     bool ShouldProduceHaptic;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Phone Settings")
+    bool IsInCall;
     void AnswerPhone();
+
+
 
     void SetState(enum PhoneState NewState);
 

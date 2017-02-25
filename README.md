@@ -23,3 +23,7 @@ Floor Tiles - https://www.turbosquid.com/FullPreview/Index.cfm/ID/1072380
 Cabinet - http://www.blendswap.com/blends/view/66864
 
 Radio - http://www.blendswap.com/blends/view/49116
+
+###Textures:
+
+iPhone Calling and In Call screens: http://www.iclarified.com/37398/ios-71-beta-3-brings-new-iphone-call-screens-new-power-off-slider-images

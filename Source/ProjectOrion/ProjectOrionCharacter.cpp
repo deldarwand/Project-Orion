@@ -184,7 +184,7 @@ void AProjectOrionCharacter::PromptUser()
 void AProjectOrionCharacter::AnswerPhone()
 {
     UE_LOG(LogTemp, Warning, TEXT("Answered the phone."));
-    PhoneComponent->SetState(PhoneState::Introduction);
+    PhoneComponent->AnswerPhone();
 }
 
 void AProjectOrionCharacter::GrabRight()

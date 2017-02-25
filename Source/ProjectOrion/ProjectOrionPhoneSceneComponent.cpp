@@ -16,6 +16,7 @@ UProjectOrionPhoneSceneComponent::UProjectOrionPhoneSceneComponent()
     WaitedFor = 0.0f;
     ShouldPrompt = IsPrompting = false;
     ShouldPlay = false;
+    IsInCall = false;
 	// ...
 }
 
@@ -65,6 +66,8 @@ void UProjectOrionPhoneSceneComponent::PromptUser()
 void UProjectOrionPhoneSceneComponent::AnswerPhone()
 {
     CurrentPhoneState = PhoneState::Introduction;
+    IsInCall = true;
+    ShouldPlay = true;
 }
 
 // Called every frame
