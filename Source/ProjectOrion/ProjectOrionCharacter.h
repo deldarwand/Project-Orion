@@ -114,6 +114,7 @@ protected:
 
     void NextLine();
     void PromptUser();
+    void SaveData();
 
 	struct TouchData
 	{
