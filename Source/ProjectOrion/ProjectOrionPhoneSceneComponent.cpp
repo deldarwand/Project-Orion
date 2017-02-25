@@ -2,7 +2,7 @@
 
 #include "ProjectOrion.h"
 #include "ProjectOrionPhoneSceneComponent.h"
-
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
 UProjectOrionPhoneSceneComponent::UProjectOrionPhoneSceneComponent()
@@ -17,6 +17,8 @@ UProjectOrionPhoneSceneComponent::UProjectOrionPhoneSceneComponent()
     ShouldPrompt = IsPrompting = false;
     ShouldPlay = false;
     IsInCall = false;
+    NarrativeOffset = (int)PhoneState::Introduction;
+    CurrentPrompt = NULL;
 	// ...
 }
 
@@ -59,6 +61,7 @@ void UProjectOrionPhoneSceneComponent::PromptUser()
 {
     if (!IsPrompting)
     {
+        CurrentPrompt = Prompts[UKismetMathLibrary::RandomIntegerInRange(0, 3)];
         ShouldPrompt = true;
     }
 }
@@ -84,9 +87,11 @@ void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTic
         ShouldProduceHaptic = false;
     }
 
-    if (ShouldPrompt && !PhoneAudioComponent->IsPlaying())
+    if (ShouldPrompt && !PhoneAudioComponent->IsPlaying() && CurrentPrompt)
     {
-        PhoneAudioComponent->SetSound(PromptOne);
+        PhoneAudioComponent->Activate();
+        PhoneAudioComponent->SetSound(CurrentPrompt);
+        PhoneAudioComponent->Play();
         IsPrompting = true;
         ShouldPrompt = false;
     }
@@ -94,47 +99,19 @@ void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTic
     if (IsPrompting)
     {
         IsPrompting = PhoneAudioComponent->IsPlaying();
-        return;
-    }
-
-    if (PhoneAudioComponent->Sound != IntroductionAudio && PhoneAudioComponent->Sound != RadioThanksAudio && PhoneAudioComponent->IsPlaying())
-    {
-        PhoneAudioComponent->Stop();
     }
 
     if (ShouldPlay)
     {
         UE_LOG(LogClass, Log, TEXT("In should play"));
-        switch ((int)CurrentPhoneState)
+        if (!PhoneAudioComponent->IsPlaying() && ((int)CurrentPhoneState - NarrativeOffset) < NarrativePrompts.Num())
         {
-
-        case PhoneState::Introduction:
-        {
-            UE_LOG(LogClass, Log, TEXT("In intro"));
-            if (IntroductionAudio && !PhoneAudioComponent->IsPlaying())
-            {
-                PhoneAudioComponent->Activate();
-                PhoneAudioComponent->SetSound(IntroductionAudio);
-                PhoneAudioComponent->Play();
-                UE_LOG(LogClass, Log, TEXT("In intro2"));
-            }
-            break;
+            PhoneAudioComponent->Activate();
+            PhoneAudioComponent->SetSound(NarrativePrompts[(int)CurrentPhoneState - NarrativeOffset]);
+            PhoneAudioComponent->Play();
+            ShouldPlay = false;
         }
 
-        case PhoneState::ThanksRadio:
-        {
-            if (RadioThanksAudio && !PhoneAudioComponent->IsPlaying())
-            {
-                PhoneAudioComponent->Activate();
-                PhoneAudioComponent->SetSound(RadioThanksAudio);
-                PhoneAudioComponent->Play();
-            }
-            break;
-        }
-        default:
-            break;
-        }
-        ShouldPlay = false;
     }
 }
 

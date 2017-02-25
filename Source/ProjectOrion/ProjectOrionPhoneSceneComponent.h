@@ -28,14 +28,13 @@ public:
     class USoundAttenuation* PhoneAttenuation;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prompt Sounds")
-    class USoundBase* PromptOne;
-    
+    TArray<USoundBase*> Prompts;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-    class USoundBase* IntroductionAudio;
+    TArray<USoundBase*> NarrativePrompts;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-    class USoundBase* RadioThanksAudio;
+    class USoundBase* CurrentPrompt;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Haptic Feedback")
     bool ShouldProduceHaptic;
@@ -56,15 +55,20 @@ private:
     float WaitedFor;
     bool ShouldPrompt, IsPrompting;
     bool ShouldPlay;
+    int NarrativeOffset;
 };
 
 enum PhoneState
 {
-    Calling,
-    Introduction,
-    Radio,
-    ThanksRadio,
-    NextAudio
+    Calling = 0,
+    Introduction = 1,
+    CabinetDrawer = 2,
+    InOtherDrawers = 3,
+    Windowsill = 4,
+    TVStand = 5,
+    End = 6,
+    ThanksRadio = 7,
+    NextAudio = 8
 };
 
 		

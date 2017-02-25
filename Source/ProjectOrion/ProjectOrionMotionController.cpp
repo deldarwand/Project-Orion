@@ -92,22 +92,6 @@ bool UProjectOrionMotionController::ReleaseComponent()
 
 void UProjectOrionMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
-    if (PhoneAudioComponent)
-    {
-        bool IsPlaying = PhoneAudioComponent->IsPlaying();
-        if (IsPlaying && PhoneAudioComponent->Sound != IntroductionAudio)
-        {
-            UE_LOG(LogClass, Warning, TEXT("Not intro sound being played."));
-        //    PhoneAudioComponent->Stop();
-       //     PhoneAudioComponent->SetSound(IntroductionAudio);
-        }
-        else if(!IsPlaying)
-        {
-            //UE_LOG(LogClass, Warning, TEXT("Start playing."));
-           // PhoneAudioComponent->Play();
-            
-        }
-    }
     UMotionControllerComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
