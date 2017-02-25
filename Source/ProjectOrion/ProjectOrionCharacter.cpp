@@ -64,6 +64,8 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
 
+    LookAtMap.Empty();
+
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -241,7 +243,7 @@ void AProjectOrionCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
-void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera)
+void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera, float DeltaTime)
 {
     FVector StartLocation = Camera->GetComponentLocation();
     FVector ScaledForwardVector = 1500.0f * Camera->GetForwardVector();
@@ -257,9 +259,19 @@ void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera)
     {
         //There was a hit reported.
        // UE_LOG(LogTemp, Warning, TEXT("Hit an actor: %s that far away: %f"), *Hit.Actor->GetName(), Hit.Distance);
-    }
-    
+        float& time = LookAtMap.FindOrAdd(*Hit.Actor->GetName());
+        time += DeltaTime;
+        LookAtMap.Add(*Hit.Actor->GetName(), time);
 
+        for (auto It = LookAtMap.CreateConstIterator(); It; ++It)
+        {
+            UE_LOG(LogTemp, Warning,
+                    TEXT("(%s, \"%f\")\n"),
+                    *It.Key(),   // same as It->Key
+                    It.Value() // same as *It->Value
+                );
+        }
+    }
 }
 
 void AProjectOrionCharacter::RadioTouched()

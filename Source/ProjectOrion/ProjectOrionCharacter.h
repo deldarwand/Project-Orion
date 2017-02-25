@@ -50,7 +50,7 @@ public:
     virtual void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult);
 
     UFUNCTION(BlueprintCallable, Category = "RayCast")
-    void RayCastTick(UCameraComponent* Camera);
+    void RayCastTick(UCameraComponent* Camera, float DeltaTime);
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -131,14 +131,6 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
-	/* 
-	 * Configures input for touchscreen devices if there is a valid touch interface for doing so 
-	 *
-	 * @param	InputComponent	The input component pointer to bind controls to
-	 * @returns true if touch controls were enabled.
-	 */
-	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
-
 public:
 	/** Returns Mesh1P subobject **/
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
@@ -146,18 +138,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 private:
+    TMap<FString, float> LookAtMap;
 
-	/** These are the set of functions that link to the subclass
-		of the UProjectOrionMotionController functions to toggle
-		the movement and rotation of the controller.*/
-	void ToggleMotionLeft();
-	void ToggleMotionRight();
-	void ToggleMotionForward();
-	void ToggleMotionBack();
-	void ToggleMotionUp();
-	void ToggleMotionDown();
-	void ToggleXRotation();
-	void ToggleYRotation();
-	void ToggleZRotation();
+
 };
 
