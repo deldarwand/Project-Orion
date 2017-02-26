@@ -140,6 +140,7 @@ public:
 
 private:
     TMap<FString, float> LookAtMap;
+    FDateTime RecordDateTime;
 
 
 };

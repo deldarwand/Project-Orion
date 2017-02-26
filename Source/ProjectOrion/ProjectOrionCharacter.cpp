@@ -81,7 +81,8 @@ void AProjectOrionCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-
+    RecordDateTime = FDateTime::Now();
+    
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint")); //Attach gun mesh component to Skeleton, doing it here because the skelton is not yet created in the constructor
 	
     TArray<UActorComponent*> ArrayOfMotionControllers = this->GetComponentsByClass(UProjectOrionMotionController::StaticClass());
@@ -177,7 +178,15 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 
 void AProjectOrionCharacter::SaveData()
 {
-
+    FString FileString = "";
+    FString FileName = RecordDateTime.ToString();
+    for (auto It = LookAtMap.CreateConstIterator(); It; ++It)
+    {
+        FString CurrentEntry = FString::Printf(TEXT("Actor:%s, Total Time:%f\n"), *It.Key(), It.Value());
+        FileString.Append(CurrentEntry);
+    }
+    FFileHelper::SaveStringToFile(FileString, *FileName);
+    UE_LOG(LogTemp, Warning, TEXT("%s"), *FileString);
 }
 
 void AProjectOrionCharacter::NextLine()
@@ -269,15 +278,6 @@ void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera, float DeltaTi
         float& time = LookAtMap.FindOrAdd(*Hit.Actor->GetName());
         time += DeltaTime;
         LookAtMap.Add(*Hit.Actor->GetName(), time);
-
-        for (auto It = LookAtMap.CreateConstIterator(); It; ++It)
-        {
-            UE_LOG(LogTemp, Warning,
-                    TEXT("(%s, \"%f\")\n"),
-                    *It.Key(),   // same as It->Key
-                    It.Value() // same as *It->Value
-                );
-        }
     }
 }
 
