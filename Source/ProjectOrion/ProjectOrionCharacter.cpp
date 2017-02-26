@@ -189,6 +189,10 @@ void AProjectOrionCharacter::SaveData()
         FString CurrentEntry = FString::Printf(TEXT("Actor:%s, Total Time:%f\r\n"), *It.Key(), It.Value());
         FileString = FileString.Append(CurrentEntry);
     }
+
+    FileString = FileString.Append("\r\n\r\n");
+    FString PrmoptsText = FString::Printf(TEXT("Number of prompts: %i\r\n"), NumberOfPrompts);
+    FileString = FileString.Append(PrmoptsText);
     FFileHelper::SaveStringToFile(FileString, *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("Printing to %s"), *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("%s"), *FileString);

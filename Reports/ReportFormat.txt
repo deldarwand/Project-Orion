@@ -1,0 +1,7 @@
+Actor:ActorName, Total Time:TimeCounted
+.
+.
+.
+
+
+Number of prompts: Number of actual prompts (not how many the prompt button has been pressed).
