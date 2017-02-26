@@ -57,13 +57,15 @@ void UProjectOrionPhoneSceneComponent::BeginPlay()
 	
 }
 
-void UProjectOrionPhoneSceneComponent::PromptUser()
+bool UProjectOrionPhoneSceneComponent::PromptUser()
 {
     if (!IsPrompting)
     {
         CurrentPrompt = Prompts[UKismetMathLibrary::RandomIntegerInRange(0, 3)];
         ShouldPrompt = true;
+        return true;
     }
+    return false;
 }
 
 void UProjectOrionPhoneSceneComponent::AnswerPhone()

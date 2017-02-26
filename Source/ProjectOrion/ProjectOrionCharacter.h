@@ -141,7 +141,7 @@ public:
 private:
     TMap<FString, float> LookAtMap;
     FDateTime RecordDateTime;
-
+    int NumberOfPrompts;
 
 };
 

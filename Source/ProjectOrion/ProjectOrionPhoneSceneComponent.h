@@ -47,7 +47,7 @@ public:
 
     void SetState(enum PhoneState NewState);
 
-    void PromptUser();
+    bool PromptUser();
 
 private:
     enum PhoneState CurrentPhoneState;

@@ -63,7 +63,7 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
-
+    NumberOfPrompts = 0;
     LookAtMap.Empty();
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
@@ -201,7 +201,11 @@ void AProjectOrionCharacter::NextLine()
 
 void AProjectOrionCharacter::PromptUser()
 {
-    PhoneComponent->PromptUser();
+    
+    if (PhoneComponent->PromptUser())
+    {
+        NumberOfPrompts++;
+    }
 }
 
 void AProjectOrionCharacter::AnswerPhone()
