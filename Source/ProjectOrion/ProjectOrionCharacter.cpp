@@ -179,13 +179,18 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 void AProjectOrionCharacter::SaveData()
 {
     FString FileString = "";
-    FString FileName = RecordDateTime.ToString();
+    FString ReportsFolder = "../Reports/";
+    FString FilePath = FPaths::GameContentDir();
+    FilePath = FilePath.Append(ReportsFolder);
+    FilePath = FilePath.Append(RecordDateTime.ToString());
+    FilePath = FilePath.Append(".txt");
     for (auto It = LookAtMap.CreateConstIterator(); It; ++It)
     {
-        FString CurrentEntry = FString::Printf(TEXT("Actor:%s, Total Time:%f\n"), *It.Key(), It.Value());
-        FileString.Append(CurrentEntry);
+        FString CurrentEntry = FString::Printf(TEXT("Actor:%s, Total Time:%f\r\n"), *It.Key(), It.Value());
+        FileString = FileString.Append(CurrentEntry);
     }
-    FFileHelper::SaveStringToFile(FileString, *FileName);
+    FFileHelper::SaveStringToFile(FileString, *FilePath);
+    UE_LOG(LogTemp, Warning, TEXT("Printing to %s"), *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("%s"), *FileString);
 }
 
