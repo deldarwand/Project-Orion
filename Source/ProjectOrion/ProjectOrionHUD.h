@@ -15,8 +15,6 @@ public:
 	virtual void DrawHUD() override;
 
 private:
-	/** Crosshair asset pointer */
-	class UTexture2D* CrosshairTex;
 
 };
 
