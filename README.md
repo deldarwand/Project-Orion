@@ -24,6 +24,15 @@ Cabinet - http://www.blendswap.com/blends/view/66864
 
 Radio - http://www.blendswap.com/blends/view/49116
 
+Buildings - http://www.blendswap.com/blends/view/69510
+
+Wallet - http://www.blendswap.com/blends/view/56373
+
 ###Textures:
 
 iPhone Calling and In Call screens: http://www.iclarified.com/37398/ios-71-beta-3-brings-new-iphone-call-screens-new-power-off-slider-images
+
+Building Textures from: www.textures.com
+
+Leather Textures - http://www.textures.com/download/substance0022/126941?q=leather
+
