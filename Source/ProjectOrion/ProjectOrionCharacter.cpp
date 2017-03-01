@@ -44,7 +44,11 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 	ActorMesh->RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
 
     NumberOfPrompts = 0;
+    CurrentRecordingIndex = 0;
     LookAtMap.Empty();
+
+    PositionArray = new FVector[54000];
+    RotatorArray = new FRotator[54000];
 }
 
 void AProjectOrionCharacter::CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult)
@@ -52,6 +56,12 @@ void AProjectOrionCharacter::CalcCamera(float DeltaTime, struct FMinimalViewInfo
     //UE_LOG(LogTemp, Warning, TEXT("Function to calculate camera within Project Orion Character"));
     AActor::CalcCamera(DeltaTime, OutResult);
     //OutResult.Location += FVector(0.0f, 0.0f, 50.0f);
+}
+
+void AProjectOrionCharacter::Destroyed()
+{
+    delete[] PositionArray;
+    delete[] RotatorArray;
 }
 
 void AProjectOrionCharacter::BeginPlay()
@@ -166,11 +176,42 @@ void AProjectOrionCharacter::SaveData()
     }
 
     FileString = FileString.Append("\r\n\r\n");
+    FileString = FileString.Append(SavePositions());
+    FileString = FileString.Append("\r\n\r\n");
+    FileString = FileString.Append(SaveRotators());
+
+    FileString = FileString.Append("\r\n\r\n");
     FString PrmoptsText = FString::Printf(TEXT("Number of prompts: %i\r\n"), NumberOfPrompts);
     FileString = FileString.Append(PrmoptsText);
     FFileHelper::SaveStringToFile(FileString, *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("Printing to %s"), *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("%s"), *FileString);
+}
+
+FString AProjectOrionCharacter::SavePositions()
+{
+    FString PositionsString = "";
+    for (int i = 0; i < CurrentRecordingIndex; i++)
+    {
+        FVector CurrentPosition = PositionArray[i];
+        FString PositionString = CurrentPosition.ToString().Append("\r\n");
+        PositionString = PositionsString.Append(PositionString);
+    }
+
+    return PositionsString;
+}
+
+FString AProjectOrionCharacter::SaveRotators()
+{
+    FString RotatorsString = "";
+    for (int i = 0; i < CurrentRecordingIndex; i++)
+    {
+        FRotator CurrentRotator = RotatorArray[i];
+        FString RotatorString = CurrentRotator.ToString().Append("\r\n");
+        RotatorsString = RotatorsString.Append(RotatorString);
+    }
+
+    return RotatorsString;
 }
 
 void AProjectOrionCharacter::NextLine()
@@ -267,6 +308,17 @@ void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera, float DeltaTi
         time += DeltaTime;
         LookAtMap.Add(*Hit.Actor->GetName(), time);
     }
+}
+
+void AProjectOrionCharacter::RecordingTick(float DeltaTime)
+{
+    FVector CurrentPosition = GetActorLocation();
+    FRotator CurrentRotator = GetActorRotation();
+
+    PositionArray[CurrentRecordingIndex] = CurrentPosition;
+    RotatorArray[CurrentRecordingIndex] = CurrentRotator;
+
+    CurrentRecordingIndex++;
 }
 
 void AProjectOrionCharacter::RadioTouched()

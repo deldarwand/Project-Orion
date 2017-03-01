@@ -40,6 +40,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "RayCast")
     void RayCastTick(UCameraComponent* Camera, float DeltaTime);
 
+    UFUNCTION(BlueprintCallable, Category = "Tick")
+    void RecordingTick(float DeltaTime);
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -100,9 +103,21 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 private:
+
+    FString SavePositions();
+    FString SaveRotators();
+
     TMap<FString, float> LookAtMap;
     FDateTime RecordDateTime;
     int NumberOfPrompts;
+
+    virtual void Destroyed();
+
+    FVector* PositionArray;
+    FRotator* RotatorArray;
+
+    // Current index to be recorded into.
+    int CurrentRecordingIndex;
 
 };
 
