@@ -102,6 +102,8 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+    virtual void Destroyed();
+
 private:
 
     FString SavePositions();
@@ -111,10 +113,10 @@ private:
     FDateTime RecordDateTime;
     int NumberOfPrompts;
 
-    virtual void Destroyed();
-
     FVector* PositionArray;
     FRotator* RotatorArray;
+
+    FDateTime StartTime;
 
     // Current index to be recorded into.
     int CurrentRecordingIndex;

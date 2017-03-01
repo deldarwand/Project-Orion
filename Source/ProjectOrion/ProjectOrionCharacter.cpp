@@ -69,7 +69,8 @@ void AProjectOrionCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
     RecordDateTime = FDateTime::Now();
-    
+    StartTime = RecordDateTime;
+
     TArray<UActorComponent*> ArrayOfMotionControllers = this->GetComponentsByClass(UProjectOrionMotionController::StaticClass());
     
     for (int i = 0; i < ArrayOfMotionControllers.Num(); i++)
@@ -176,13 +177,20 @@ void AProjectOrionCharacter::SaveData()
     }
 
     FileString = FileString.Append("\r\n\r\n");
+    FString PrmoptsText = FString::Printf(TEXT("Number of prompts: %i\r\n"), NumberOfPrompts);
+    FileString = FileString.Append(PrmoptsText);
+    
+    FDateTime EndDate = FDateTime::Now();
+    FTimespan TimeSpanToFinish = EndDate - StartTime;
+    FString TimeString = FString::Printf(TEXT("Time to finish: %f"), TimeSpanToFinish.GetTotalMilliseconds());
+    FileString = FileString.Append("\r\n\r\n");
+    FileString = FileString.Append(TimeString);
+
+    FileString = FileString.Append("\r\n\r\n");
     FileString = FileString.Append(SavePositions());
     FileString = FileString.Append("\r\n\r\n");
     FileString = FileString.Append(SaveRotators());
-
-    FileString = FileString.Append("\r\n\r\n");
-    FString PrmoptsText = FString::Printf(TEXT("Number of prompts: %i\r\n"), NumberOfPrompts);
-    FileString = FileString.Append(PrmoptsText);
+    
     FFileHelper::SaveStringToFile(FileString, *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("Printing to %s"), *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("%s"), *FileString);
