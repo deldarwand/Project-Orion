@@ -38,6 +38,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
     FVector MovementLocked;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Character")
+    class AProjectOrionCharacter* PlayerCharacter;
+
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grabbable", meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* GrabMesh;
@@ -53,5 +56,8 @@ private:
     
 
     bool Attached;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Study", meta = (AllowPrivateAccess = "true"))
+    bool IsWallet;
 
 };

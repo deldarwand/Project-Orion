@@ -90,6 +90,7 @@ protected:
     void NextLine();
     void PromptUser();
     void SaveData();
+    void SaveData(FString NameModifier = "");
 	
 protected:
 	// APawn interface
@@ -103,6 +104,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
     virtual void Destroyed();
+
+    void GrabbedWallet();
 
 private:
 

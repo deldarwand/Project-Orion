@@ -164,11 +164,17 @@ void AProjectOrionCharacter::SetupPlayerInputComponent(class UInputComponent* In
 
 void AProjectOrionCharacter::SaveData()
 {
+    SaveData("");
+}
+
+void AProjectOrionCharacter::SaveData(FString NameModifier)
+{
     FString FileString = "";
     FString ReportsFolder = "../Reports/";
     FString FilePath = FPaths::GameContentDir();
     FilePath = FilePath.Append(ReportsFolder);
     FilePath = FilePath.Append(RecordDateTime.ToString());
+    FilePath = FilePath.Append(NameModifier);
     FilePath = FilePath.Append(".txt");
     for (auto It = LookAtMap.CreateConstIterator(); It; ++It)
     {
@@ -333,4 +339,9 @@ void AProjectOrionCharacter::RadioTouched()
 {
     UE_LOG(LogTemp, Warning, TEXT("The radio player is touched. Should now play the thank you audio."));
     PhoneComponent->SetState(PhoneState::CabinetDrawer);
+}
+
+void AProjectOrionCharacter::GrabbedWallet()
+{
+    SaveData("GrabbedWallet");
 }

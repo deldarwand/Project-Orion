@@ -2,7 +2,7 @@
 
 #include "ProjectOrion.h"
 #include "ProjectOrionGrabbable.h"
-
+#include "ProjectOrionCharacter.h"
 
 // Sets default values
 AProjectOrionGrabbable::AProjectOrionGrabbable()
@@ -117,6 +117,13 @@ void AProjectOrionGrabbable::Tick(float DeltaTime)
 
 bool AProjectOrionGrabbable::GrabbedBy(class USceneComponent* componentToAttachTo)
 {
+    if (IsWallet)
+    {
+        if (PlayerCharacter)
+        {
+            PlayerCharacter->GrabbedWallet();
+        }
+    }
     if (ShouldUseLockedAxis)
     {
         Attached = true;
