@@ -52,6 +52,11 @@ void UProjectOrionMotionController::BeginPlay()
 bool UProjectOrionMotionController::GrabComponent()
 {
     TArray<AActor*> GrabbableActors;
+    UE_LOG(LogClass, Log, TEXT("The size of the grab sphere is %f"), GrabSphere->GetScaledSphereRadius());
+    FVector Diff = GrabSphere->GetComponentLocation() - this->GetComponentLocation();
+    FString s = Diff.ToString();
+    UE_LOG(LogClass, Log, TEXT("The difference in place of grab and controller %s"), *s);
+
     if (GrabSphere)
     {
         GrabSphere->GetOverlappingActors(GrabbableActors);
@@ -68,9 +73,10 @@ bool UProjectOrionMotionController::GrabComponent()
                 {
                     ComponentGrabbed = TestGrabbable;
                 }
+                FString ActorName = GrabbableActors[i]->GetName();
+                UE_LOG(LogClass, Log, TEXT("Actor number %i is named %s"), i, *ActorName);
             }
-            FString ActorName = GrabbableActors[i]->GetName();
-            UE_LOG(LogClass, Log, TEXT("Actor number %i is named %s"), i, *ActorName);
+            
         }
     }
     else

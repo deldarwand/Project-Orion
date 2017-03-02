@@ -27,7 +27,7 @@ public:
     bool ReleaseComponent();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grab Sphere Size", meta = (AllowPrivateAccess = "true"))
-    float GrabSphereSize = 50.0f;
+    float GrabSphereSize = 10.0f;
 
     class USphereComponent* GrabSphere;
     
