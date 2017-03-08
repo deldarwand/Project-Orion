@@ -28,7 +28,7 @@ public:
 
 private:
     bool PollControllerState(FVector& Position, FRotator& Orientation);
-	
+	class PhaseSpaceThread* PhaseSpaceThreadInstance;
 	FVector ConvertFromPSToUE(FVector PSPosition);
 
 };

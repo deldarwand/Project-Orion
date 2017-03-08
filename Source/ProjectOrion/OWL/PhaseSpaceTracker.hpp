@@ -149,8 +149,8 @@ public:
 		
 		
 		head_id = 10;
-		leftFoot_id = 0;
-		rightFoot_id = 62;
+		leftFoot_id = 2;
+		rightFoot_id = 60;
 
 		connected = false;
 		valid = false;
@@ -182,7 +182,7 @@ public:
 
 		result = owl.initialize();
 
-		if (result < 0)
+		if (result <= 0)
 		{
 			printf("ERROR: Error initialising PhaseSpace");
 			return;
@@ -192,15 +192,25 @@ public:
 
 		/* create the trackers */
 
-		headRigidBody->Create(owl);
+		//headRigidBody->Create(owl);
 
 		/* Create some tracker using the markers so the server will look for them */
 		
-		owl.createTracker(1, "point", "lfoot", "");
-		owl.assignMarker(1, leftFoot_id, "1", "");
+/*		if (owl.createTracker(0, "point", "lfoot"))
+		{
+			printf("Success\n");
+		}
+		
+		owl.destroyTracker(0);
+		owl.createTracker(0, "point", "lfoot");
 
-		owl.createTracker(2, "point", "lfoot", "");
-		owl.assignMarker(2, rightFoot_id, "62", "");
+		if(owl.assignMarker(0, leftFoot_id, "0"))
+		{
+			printf("Success\n");
+		}
+
+		owl.createTracker(2, "point", "rfoot");
+		owl.assignMarker(2, rightFoot_id, "62");*/
 
 		//owl.createTracker(2, "point", "rfoot", "");
 		//owl.assignMarker(1, rightFoot_id, "38", "");
@@ -232,7 +242,7 @@ public:
 				//cerr << event->name() << ": " << event->str() << endl; //commented out in case nonfatal errors cause the main loop to stall
 				return;
 			}
-
+			owl.pose();
 			if(event->type_id() == OWL::Type::FRAME)
 			{
 				if(event->find("markers", markers) > 0)
@@ -243,15 +253,15 @@ public:
 						{
 							if (m->id == leftFoot_id)
 							{
-								leftFoot[0] = m->x;// *0.1f;
-								leftFoot[1] = m->y;// *0.1f;
-								leftFoot[2] = m->z;// *0.1f;
+								leftFoot[0] = m->x;
+								leftFoot[1] = m->y;
+								leftFoot[2] = m->z;
 							}
 							if (m->id == rightFoot_id)
 							{
 								rightFoot[0] = m->x;
 								rightFoot[1] = m->y;
-								rightFoot[2] = m->z;// *0.1f;
+								rightFoot[2] = m->z;
 							}
 						}
 					}
