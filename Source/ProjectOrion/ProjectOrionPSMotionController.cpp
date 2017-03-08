@@ -2,7 +2,6 @@
 
 #include "ProjectOrion.h"
 #include "ProjectOrionPSMotionController.h"
-#include "OWL/PhaseSpaceTracker.hpp"
 #include "OWL/PhaseSpaceThread.h"
 
 UProjectOrionPSMotionController::UProjectOrionPSMotionController()
@@ -14,10 +13,17 @@ UProjectOrionPSMotionController::UProjectOrionPSMotionController()
     PlayerIndex = 0;
     bDisableLowLatencyUpdate = false;
 	PhaseSpaceThreadInstance = PhaseSpaceThread::StartPhaseSpace();
+	PhaseSpaceOffset = FVector::ZeroVector;
+	DidSetOffset = false;
 }
 
 void UProjectOrionPSMotionController::BeginPlay()
 {
+	FVector Position;
+	FRotator Orientation;
+	PollControllerState(Position, Orientation);
+	PhaseSpaceOffset = Position;
+	InitialPosition =  GetRelativeTransform().GetLocation();
 }
 
 void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -26,6 +32,10 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 	FRotator Orientation;
 
 	bool bTracked = PollControllerState(Position, Orientation);
+	
+	FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
+	
+	Position = InitialPosition + OffsetFromOrigin;
     if (bTracked)
     {
 		if (Hand == EControllerHand::Left)
@@ -36,6 +46,7 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Got RIGHT location %s"), *Position.ToString());
 		}
+		//SetWorldLocation(Position);
 		SetRelativeLocationAndRotation(Position, Orientation);
     }
 }
@@ -60,10 +71,9 @@ bool UProjectOrionPSMotionController::PollControllerState(FVector& Position, FRo
 FVector UProjectOrionPSMotionController::ConvertFromPSToUE(FVector PSPosition)
 {
 	FVector UEPosition;
-
-	for (int i = 0; i < 3; i++)
-	{
-		UEPosition[i] = (PSPosition[i] / 1000.0f);
-	}
+	UEPosition.X = PSPosition.X;
+	UEPosition.Y = PSPosition.Z;
+	UEPosition.Z = PSPosition.Y;
+	UEPosition /= 10.0f;
 	return UEPosition;
 }

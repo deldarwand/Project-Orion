@@ -24,11 +24,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Motion Controller")
     bool IsLeg;
 
-	class PhaseSpaceTracker* LegTracker;
-
 private:
     bool PollControllerState(FVector& Position, FRotator& Orientation);
 	class PhaseSpaceThread* PhaseSpaceThreadInstance;
 	FVector ConvertFromPSToUE(FVector PSPosition);
+	FVector PhaseSpaceOffset;
+	FVector InitialPosition;
+	bool DidSetOffset;
 
 };
