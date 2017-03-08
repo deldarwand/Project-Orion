@@ -11,48 +11,6 @@ UProjectOrionPSMotionController::UProjectOrionPSMotionController()
     PrimaryComponentTick.bStartWithTickEnabled = true;
     PrimaryComponentTick.TickGroup = TG_PrePhysics;
 
-
-	/*std::string address = "128.16.8.253";
-	OWL::Context owl;
-	OWL::Markers markers;
-	if (owl.open(address) <= 0 || owl.initialize() <= 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("FAIL"));
-	}
-
-	// start streaming
-	owl.streaming(1);
-	
-	// main loop
-	while (owl.isOpen() && owl.property<int>("initialized"))
-	{
-		const OWL::Event *event = owl.nextEvent(1000);
-		if (!event) continue;
-
-		if (event->type_id() == OWL::Type::ERROR)
-		{
-			//cerr << event->name() << ": " << event->str() << endl;
-			break;
-		}
-		else if (event->type_id() == OWL::Type::FRAME)
-		{
-			//cout << "time=" << event->time() << " " << event->type_name() << " " << event->name() << "=" << event->size<OWL::Event>() << ":" << endl;
-			if (event->find("markers", markers) > 0)
-			{
-				//cout << " markers=" << markers.size() << ":" << endl;
-				for (OWL::Markers::iterator m = markers.begin(); m != markers.end(); m++)
-					if (m->cond > 0)
-					{
-						FVector Position = FVector(m->x, m->y, m->z);
-						UE_LOG(LogTemp, Warning, TEXT("Got location %s"), *Position.ToString());
-					}
-					//	cout << "  " << m->id << ") " << m->x << "," << m->y << "," << m->z << endl;
-			}
-		}
-	} // while
-	owl.done();
-	owl.close();*/
-
     PlayerIndex = 0;
     bDisableLowLatencyUpdate = false;
 	PhaseSpaceThreadInstance = PhaseSpaceThread::StartPhaseSpace();
@@ -60,7 +18,6 @@ UProjectOrionPSMotionController::UProjectOrionPSMotionController()
 
 void UProjectOrionPSMotionController::BeginPlay()
 {
-
 }
 
 void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -68,18 +25,7 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 	FVector Position;
 	FRotator Orientation;
 
-	PhaseSpaceThreadInstance->CanAccessMarkers->Lock();
-	if (Hand == EControllerHand::Right)
-	{
-		Position = ConvertFromPSToUE(PhaseSpaceThreadInstance->RightLegPosition);
-	}
-	else if (Hand == EControllerHand::Left)
-	{
-		Position = ConvertFromPSToUE(PhaseSpaceThreadInstance->LeftLegPosition);
-	}
-	PhaseSpaceThreadInstance->CanAccessMarkers->Unlock();
-
-	bool bTracked = true;//PollControllerState(Position, Orientation);
+	bool bTracked = PollControllerState(Position, Orientation);
     if (bTracked)
     {
 		if (Hand == EControllerHand::Left)
@@ -96,23 +42,17 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 
 bool UProjectOrionPSMotionController::PollControllerState(FVector& Position, FRotator& Orientation)
 {
-    // Use the PhaseSpace library to get position and rotation for the controller.
-    Position = GetComponentLocation();
-    Orientation = GetComponentRotation();
-
-	std::vector<float> footLocation;
-	if (Hand == EControllerHand::Left)
+	// Makes sure that it is safe to access the marker positions and then gets them and returns them.
+	PhaseSpaceThreadInstance->CanAccessMarkers->Lock();
+	if (Hand == EControllerHand::Right)
 	{
-		footLocation = LegTracker->GetLeftFoot();
+		Position = ConvertFromPSToUE(PhaseSpaceThreadInstance->RightLegPosition);
 	}
-	else if (Hand == EControllerHand::Right)
+	else if (Hand == EControllerHand::Left)
 	{
-		footLocation = LegTracker->GetRightFoot();
+		Position = ConvertFromPSToUE(PhaseSpaceThreadInstance->LeftLegPosition);
 	}
-	FVector footLocationV = FVector(footLocation[0], footLocation[1], footLocation[2]);
-	//footLocationV = ConvertFromPSToUE(footLocationV);
-	
-	Position = footLocationV;
+	PhaseSpaceThreadInstance->CanAccessMarkers->Unlock();
 
     return true;
 }
