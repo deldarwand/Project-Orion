@@ -6,10 +6,15 @@ PhaseSpaceThread* PhaseSpaceThread::PSThread = NULL;
 PhaseSpaceThread::PhaseSpaceThread()
 {
 	Thread = FRunnableThread::Create(this, TEXT("PhaseSpace"), false);
-	LeftFootID = 2;
-	RightFootID = 60;
+	LeftFootIDs.push_back(2);
+	LeftFootIDs.push_back(4);
+	RightFootIDs.push_back(60);
+	RightFootIDs.push_back(61);
 	CanAccessMarkers = new FCriticalSection();
 	ShouldShutDown = false;
+	NumberOfMarkersPerFoot = 2;
+	LeftLegPositions.reserve(NumberOfMarkersPerFoot);
+	RightLegPositions.reserve(NumberOfMarkersPerFoot);
 }
 
 bool PhaseSpaceThread::Init()
@@ -65,19 +70,36 @@ uint32 PhaseSpaceThread::Run()
 				for (OWL::Markers::iterator m = Markers.begin(); m != Markers.end(); m++)
 					if (m->cond > 0)
 					{
+						
+						if (m->id == LeftFootIDs[0])
+						{
+							LeftLegPositions[0].X = m->x;
+							LeftLegPositions[0].Y = m->y;
+							LeftLegPositions[0].Z = m->z;
+						}
+						if (m->id == LeftFootIDs[1])
+						{
+							LeftLegPositions[1].X = m->x;
+							LeftLegPositions[1].Y = m->y;
+							LeftLegPositions[1].Z = m->z;
+						}
+						if (m->id == RightFootIDs[0])
+						{
+							RightLegPositions[0].X = m->x;
+							RightLegPositions[0].Y = m->y;
+							RightLegPositions[0].Z = m->z;
+						}
+						if (m->id == RightFootIDs[1])
+						{
+							RightLegPositions[1].X = m->x;
+							RightLegPositions[1].Y = m->y;
+							RightLegPositions[1].Z = m->z;
+						}
+						FVector TempLeftLeg = (LeftLegPositions[0] + LeftLegPositions[0]) / 2.0f;
+						FVector TempRightLeg = (RightLegPositions[0] + RightLegPositions[0]) / 2.0f;
 						CanAccessMarkers->Lock();
-						if (m->id == LeftFootID)
-						{
-							LeftLegPosition.X = m->x;
-							LeftLegPosition.Y = m->y;
-							LeftLegPosition.Z = m->z;
-						}
-						if (m->id == RightFootID)
-						{
-							RightLegPosition.X = m->x;
-							RightLegPosition.Y = m->y;
-							RightLegPosition.Z = m->z;
-						}
+						LeftLegPosition = TempLeftLeg;
+						RightLegPosition = TempRightLeg;
 						CanAccessMarkers->Unlock();
 					}
 						//cout << "  " << m->id << ") " << m->x << "," << m->y << "," << m->z << endl;

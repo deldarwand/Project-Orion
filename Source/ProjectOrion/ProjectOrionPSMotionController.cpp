@@ -64,7 +64,7 @@ bool UProjectOrionPSMotionController::PollControllerState(FVector& Position, FRo
 		Position = ConvertFromPSToUE(PhaseSpaceThreadInstance->LeftLegPosition);
 	}
 	PhaseSpaceThreadInstance->CanAccessMarkers->Unlock();
-
+	Orientation = FRotator(0.0f, 0.0f, 0.0f);
     return true;
 }
 

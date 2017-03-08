@@ -22,14 +22,16 @@ public:
 	FRunnableThread* Thread;
 	static PhaseSpaceThread* PSThread;
 
-	uint32 LeftFootID;
-	uint32 RightFootID;
+	std::vector<uint32> LeftFootIDs;
+	std::vector<uint32> RightFootIDs;
 
 	OWL::Context Owl;
 	OWL::Markers Markers;
 
 private:
 	bool ShouldShutDown;
-
+	int NumberOfMarkersPerFoot;
+	std::vector<FVector> LeftLegPositions;
+	std::vector<FVector> RightLegPositions;
 };
 
