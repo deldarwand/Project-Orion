@@ -3,6 +3,7 @@
 #include "ProjectOrion.h"
 #include "ProjectOrionPSMotionController.h"
 #include "OWL/PhaseSpaceThread.h"
+#include "ProjectOrionCharacter.h"
 
 UProjectOrionPSMotionController::UProjectOrionPSMotionController()
 {
@@ -15,6 +16,7 @@ UProjectOrionPSMotionController::UProjectOrionPSMotionController()
 	PhaseSpaceThreadInstance = PhaseSpaceThread::StartPhaseSpace();
 	PhaseSpaceOffset = FVector::ZeroVector;
 	DidSetOffset = false;
+	
 }
 
 void UProjectOrionPSMotionController::BeginPlay()
@@ -24,6 +26,7 @@ void UProjectOrionPSMotionController::BeginPlay()
 	PollControllerState(Position, Orientation);
 	PhaseSpaceOffset = Position;
 	InitialPosition =  GetRelativeTransform().GetLocation();
+	InitialFollowPosition = FollowComponent->GetActorLocation();
 }
 
 void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -34,8 +37,8 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 	bool bTracked = PollControllerState(Position, Orientation);
 	
 	FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
-	
-	Position = InitialPosition + OffsetFromOrigin;
+	FVector CurrentFollow = FollowComponent->GetActorLocation();
+	Position = InitialPosition + OffsetFromOrigin + (CurrentFollow - InitialFollowPosition);
     if (bTracked)
     {
 		if (Hand == EControllerHand::Left)

@@ -24,12 +24,16 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Motion Controller")
     bool IsLeg;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Follow", meta = (AllowPrivateAccess = "true"))
+	class AProjectOrionCharacter* FollowComponent;
+
 private:
     bool PollControllerState(FVector& Position, FRotator& Orientation);
 	class PhaseSpaceThread* PhaseSpaceThreadInstance;
 	FVector ConvertFromPSToUE(FVector PSPosition);
 	FVector PhaseSpaceOffset;
 	FVector InitialPosition;
+	FVector InitialFollowPosition;
 	bool DidSetOffset;
 
 };
