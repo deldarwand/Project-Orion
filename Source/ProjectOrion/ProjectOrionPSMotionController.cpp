@@ -26,7 +26,10 @@ void UProjectOrionPSMotionController::BeginPlay()
 	PollControllerState(Position, Orientation);
 	PhaseSpaceOffset = Position;
 	InitialPosition =  GetRelativeTransform().GetLocation();
-	InitialFollowPosition = FollowComponent->GetActorLocation();
+    if (FollowComponent)
+    {
+        InitialFollowPosition = FollowComponent->GetActorLocation();
+    }
 }
 
 void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -36,9 +39,16 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 
 	bool bTracked = PollControllerState(Position, Orientation);
 	
-	FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
-	FVector CurrentFollow = FollowComponent->GetActorLocation();
-	Position = InitialPosition + OffsetFromOrigin + (CurrentFollow - InitialFollowPosition);
+    if (FollowComponent)
+    {
+        FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
+        FVector CurrentFollow = FollowComponent->GetActorLocation();
+        Position = InitialPosition + OffsetFromOrigin + (CurrentFollow - InitialFollowPosition);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Cannot find a player to follow."));
+    }
     if (bTracked)
     {
 		if (Hand == EControllerHand::Left)
