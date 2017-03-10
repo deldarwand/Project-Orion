@@ -19,6 +19,10 @@ public:
 	FCriticalSection* CanAccessMarkers;
 	FVector LeftLegPosition;
 	FVector RightLegPosition;
+
+	FRotator LeftLegRotation;
+	FRotator RightLegRotation;
+
 	FRunnableThread* Thread;
 	static PhaseSpaceThread* PSThread;
 
@@ -33,5 +37,7 @@ private:
 	int NumberOfMarkersPerFoot;
 	std::vector<FVector> LeftLegPositions;
 	std::vector<FVector> RightLegPositions;
+
+	FRotator CalculateRotationBetweenDifference(FVector DifferenceVector);
 };
 

@@ -1,5 +1,6 @@
 #include "ProjectOrion.h"
 #include "PhaseSpaceThread.h"
+#include "Kismet/KismetMathLibrary.h"
 
 PhaseSpaceThread* PhaseSpaceThread::PSThread = NULL;
 
@@ -58,15 +59,12 @@ uint32 PhaseSpaceThread::Run()
 
 		if (event->type_id() == OWL::Type::ERROR)
 		{
-			//cerr << event->name() << ": " << event->str() << endl;
 			break;
 		}
 		else if (event->type_id() == OWL::Type::FRAME)
 		{
-			//cout << "time=" << event->time() << " " << event->type_name() << " " << event->name() << "=" << event->size<OWL::Event>() << ":" << endl;
 			if (event->find("markers", Markers) > 0)
 			{
-				//cout << " markers=" << markers.size() << ":" << endl;
 				for (OWL::Markers::iterator m = Markers.begin(); m != Markers.end(); m++)
 					if (m->cond > 0)
 					{
@@ -95,14 +93,19 @@ uint32 PhaseSpaceThread::Run()
 							RightLegPositions[1].Y = m->y;
 							RightLegPositions[1].Z = m->z;
 						}
-						FVector TempLeftLeg = (LeftLegPositions[0] + LeftLegPositions[0]) / 2.0f;
-						FVector TempRightLeg = (RightLegPositions[0] + RightLegPositions[0]) / 2.0f;
+						FVector TempLeftLeg = (LeftLegPositions[0] + LeftLegPositions[1]) / 2.0f;
+						FVector TempRightLeg = (RightLegPositions[0] + RightLegPositions[1]) / 2.0f;
+
+						FRotator TempLeftLegRot = (LeftLegPositions[0] - LeftLegPositions[1]).Rotation();
+						FRotator TempRightLegRot = (RightLegPositions[0] - RightLegPositions[1]).Rotation();
+
 						CanAccessMarkers->Lock();
 						LeftLegPosition = TempLeftLeg;
 						RightLegPosition = TempRightLeg;
+						LeftLegRotation = TempLeftLegRot;
+						RightLegRotation = TempRightLegRot;
 						CanAccessMarkers->Unlock();
 					}
-						//cout << "  " << m->id << ") " << m->x << "," << m->y << "," << m->z << endl;
 			}
 		}
 	} // while
@@ -110,7 +113,6 @@ uint32 PhaseSpaceThread::Run()
 	Owl.close();
 	return 0;
 }
-
 
 PhaseSpaceThread::~PhaseSpaceThread()
 {
