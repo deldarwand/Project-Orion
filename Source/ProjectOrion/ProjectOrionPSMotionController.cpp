@@ -91,13 +91,14 @@ bool UProjectOrionPSMotionController::PollControllerState(FVector& Position, FRo
 	if (Hand == EControllerHand::Right)
 	{
 		Position = ConvertFromPSToUE(PhaseSpaceThreadInstance->RightLegPosition);
+		Orientation = PhaseSpaceThreadInstance->RightLegRotation;
 	}
 	else if (Hand == EControllerHand::Left)
 	{
 		Position = ConvertFromPSToUE(PhaseSpaceThreadInstance->LeftLegPosition);
+		Orientation = PhaseSpaceThreadInstance->LeftLegRotation;
 	}
 	PhaseSpaceThreadInstance->CanAccessMarkers->Unlock();
-	Orientation = FRotator(0.0f, 0.0f, 0.0f);
     return true;
 }
 
