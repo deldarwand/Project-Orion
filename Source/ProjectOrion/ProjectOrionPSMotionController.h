@@ -25,7 +25,11 @@ public:
     bool IsLeg;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Follow", meta = (AllowPrivateAccess = "true"))
-	class AProjectOrionCharacter* FollowComponent;
+	class UCameraComponent* FollowComponent;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Follow", meta = (AllowPrivateAccess = "true"))
+	//class UStaticMeshComponent* MeshToFollow;
+
 
 private:
     bool PollControllerState(FVector& Position, FRotator& Orientation);

@@ -21,14 +21,29 @@ UProjectOrionPSMotionController::UProjectOrionPSMotionController()
 
 void UProjectOrionPSMotionController::BeginPlay()
 {
+	if (IsLeg)
+	{
+		Hand = EControllerHand::Right;
+	}
 	FVector Position;
 	FRotator Orientation;
 	PollControllerState(Position, Orientation);
 	PhaseSpaceOffset = Position;
-	InitialPosition =  GetRelativeTransform().GetLocation();
+	InitialPosition = GetComponentLocation();
+	InitialPosition.Z = 0.0f;
+	TArray<USceneComponent*> ArrayOfParents;
+	GetParentComponents(ArrayOfParents);
+	for (int i = 0; i < ArrayOfParents.Num(); i++)
+	{
+		UCameraComponent* Component = Cast<UCameraComponent>(ArrayOfParents[i]);
+		if (Component)
+		{
+			FollowComponent = Component;
+		}
+	}
     if (FollowComponent)
     {
-        InitialFollowPosition = FollowComponent->GetActorLocation();
+		InitialFollowPosition = FollowComponent->GetComponentLocation();
     }
 }
 
@@ -42,13 +57,18 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
     if (FollowComponent)
     {
         FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
-        FVector CurrentFollow = FollowComponent->GetActorLocation();
-        Position = InitialPosition + OffsetFromOrigin + (CurrentFollow - InitialFollowPosition);
+        FVector CurrentFollow = FollowComponent->GetComponentLocation();
+		
+		UE_LOG(LogTemp, Warning, TEXT("Initial Position is %s."), *InitialPosition.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Initial Player Position is %s."), *InitialFollowPosition.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Player Position Diff is %s."), *(FollowComponent->GetComponentLocation() - InitialFollowPosition).ToString());
+		Position = InitialPosition + OffsetFromOrigin + (CurrentFollow - InitialFollowPosition);
     }
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find a player to follow."));
     }
+
     if (bTracked)
     {
 		if (Hand == EControllerHand::Left)
@@ -59,8 +79,8 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Got RIGHT location %s"), *Position.ToString());
 		}
-		//SetWorldLocation(Position);
-		SetRelativeLocationAndRotation(Position, Orientation);
+		SetWorldLocation(Position);
+		//SetRelativeLocationAndRotation(Position, Orientation);
     }
 }
 
