@@ -53,7 +53,10 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 	FRotator Orientation;
 
 	bool bTracked = PollControllerState(Position, Orientation);
-	
+    if (!PhaseSpaceThreadInstance->FoundPhaseSpace)
+    {
+        return;
+    }
     if (FollowComponent)
     {
         FVector OffsetFromOrigin = Position - PhaseSpaceOffset;

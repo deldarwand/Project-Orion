@@ -19,6 +19,7 @@ UProjectOrionPhoneSceneComponent::UProjectOrionPhoneSceneComponent()
     IsInCall = false;
     NarrativeOffset = (int)PhoneState::Introduction;
     CurrentPrompt = NULL;
+    PlayedLastFrame = false;
 	// ...
 }
 
@@ -115,6 +116,12 @@ void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTic
         }
 
     }
+    bool IsPlayingNow = PhoneAudioComponent->IsPlaying();
+    if (PlayedLastFrame && !IsPlayingNow)
+    {
+        UE_LOG(LogClass, Log, TEXT("Phone finished playing. Can keep going."));
+    }
+    PlayedLastFrame = IsPlayingNow;
 }
 
 void UProjectOrionPhoneSceneComponent::SetState(enum PhoneState NewState)

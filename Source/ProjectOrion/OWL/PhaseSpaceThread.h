@@ -29,6 +29,8 @@ public:
 	std::vector<uint32> LeftFootIDs;
 	std::vector<uint32> RightFootIDs;
 
+    bool FoundPhaseSpace;
+
 	OWL::Context Owl;
 	OWL::Markers Markers;
 

@@ -56,6 +56,7 @@ private:
     bool ShouldPrompt, IsPrompting;
     bool ShouldPlay;
     int NarrativeOffset;
+    bool PlayedLastFrame;
 };
 
 enum PhoneState

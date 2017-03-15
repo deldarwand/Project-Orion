@@ -16,6 +16,7 @@ PhaseSpaceThread::PhaseSpaceThread()
 	NumberOfMarkersPerFoot = 2;
 	LeftLegPositions.reserve(NumberOfMarkersPerFoot);
 	RightLegPositions.reserve(NumberOfMarkersPerFoot);
+    FoundPhaseSpace = false;
 }
 
 bool PhaseSpaceThread::Init()
@@ -48,6 +49,7 @@ uint32 PhaseSpaceThread::Run()
 	
 	if (Owl.open(address) <= 0 || Owl.initialize() <= 0) return 1;
 
+    FoundPhaseSpace = true;
 	// start streaming
 	Owl.streaming(1);
 
