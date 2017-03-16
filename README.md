@@ -3,6 +3,8 @@ List of attributions for current version:
 ###Music:
 Song Title: Waltz of the Flowers - http://www.freesfx.co.uk/users/sound-ideas/
 
+Wind Sounds Effect: Heavy Wind - http://www.freesfx.co.uk/soundeffects/wind/
+
 ###Models:
 TV - http://www.blendswap.com/blends/view/46293
 
