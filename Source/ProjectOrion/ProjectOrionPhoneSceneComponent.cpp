@@ -92,6 +92,7 @@ void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTic
 
     if (ShouldPrompt && !PhoneAudioComponent->IsPlaying() && CurrentPrompt)
     {
+		UE_LOG(LogClass, Log, TEXT("Playing a prompt."));
         PhoneAudioComponent->Activate();
         PhoneAudioComponent->SetSound(CurrentPrompt);
         PhoneAudioComponent->Play();
@@ -119,7 +120,7 @@ void UProjectOrionPhoneSceneComponent::TickComponent( float DeltaTime, ELevelTic
     bool IsPlayingNow = PhoneAudioComponent->IsPlaying();
     if (PlayedLastFrame && !IsPlayingNow)
     {
-        UE_LOG(LogClass, Log, TEXT("Phone finished playing. Can keep going."));
+        UE_LOG(LogClass, Log, TEXT("Phone finished playing %s. Can keep going."), *PhoneAudioComponent->Sound->GetName());
     }
     PlayedLastFrame = IsPlayingNow;
 }
