@@ -16,7 +16,8 @@ UProjectOrionPSMotionController::UProjectOrionPSMotionController()
 	PhaseSpaceThreadInstance = PhaseSpaceThread::StartPhaseSpace();
 	PhaseSpaceOffset = FVector::ZeroVector;
 	DidSetOffset = false;
-	
+	DidGetVivePosition = false;
+	NumberOfSkippedFrames = 0;
 }
 
 void UProjectOrionPSMotionController::BeginPlay()
@@ -59,13 +60,23 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
     }
     if (FollowComponent)
     {
+		if (NumberOfSkippedFrames < NUMBER_OF_FRAMES_TO_SKIP)
+		{
+			NumberOfSkippedFrames++;
+			return;
+		}
+		if (!DidGetVivePosition)
+		{
+			InitialVivePosition = FollowComponent->GetComponentLocation();
+			DidGetVivePosition = true;
+		}
         FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
         FVector CurrentFollow = FollowComponent->GetComponentLocation();
 		UE_LOG(LogTemp, Warning, TEXT("PS Position is %s."), *Position.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Initial Position is %s."), *InitialPosition.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Initial Player Position is %s."), *InitialFollowPosition.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Player Position Diff is %s."), *(FollowComponent->GetComponentLocation() - InitialFollowPosition).ToString());
-		Position = InitialPosition + OffsetFromOrigin;// +(CurrentFollow - InitialFollowPosition);
+		Position = InitialPosition + OffsetFromOrigin + (InitialVivePosition - InitialFollowPosition);
     }
     else
     {
@@ -108,8 +119,8 @@ bool UProjectOrionPSMotionController::PollControllerState(FVector& Position, FRo
 FVector UProjectOrionPSMotionController::ConvertFromPSToUE(FVector PSPosition)
 {
 	FVector UEPosition;
-	UEPosition.X = PSPosition.X;
-	UEPosition.Y = PSPosition.Z;
+	UEPosition.Y = -PSPosition.X;
+	UEPosition.X = PSPosition.Z;
 	UEPosition.Z = PSPosition.Y;
 	UEPosition /= 10.0f;
 	return UEPosition;

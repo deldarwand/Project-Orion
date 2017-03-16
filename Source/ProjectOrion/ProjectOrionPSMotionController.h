@@ -38,6 +38,10 @@ private:
 	FVector PhaseSpaceOffset;
 	FVector InitialPosition;
 	FVector InitialFollowPosition;
+	FVector InitialVivePosition;
+#define NUMBER_OF_FRAMES_TO_SKIP 5
+	int NumberOfSkippedFrames;
 	bool DidSetOffset;
+	bool DidGetVivePosition;
 
 };

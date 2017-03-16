@@ -9,8 +9,8 @@ PhaseSpaceThread::PhaseSpaceThread()
 	Thread = FRunnableThread::Create(this, TEXT("PhaseSpace"), false);
 	LeftFootIDs.push_back(0);
 	LeftFootIDs.push_back(4);
-	RightFootIDs.push_back(60);
-	RightFootIDs.push_back(61);
+	RightFootIDs.push_back(62);
+	RightFootIDs.push_back(64);
 	CanAccessMarkers = new FCriticalSection();
 	ShouldShutDown = false;
 	NumberOfMarkersPerFoot = 2;
