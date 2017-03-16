@@ -61,11 +61,11 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
     {
         FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
         FVector CurrentFollow = FollowComponent->GetComponentLocation();
-		
+		UE_LOG(LogTemp, Warning, TEXT("PS Position is %s."), *Position.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Initial Position is %s."), *InitialPosition.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Initial Player Position is %s."), *InitialFollowPosition.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Player Position Diff is %s."), *(FollowComponent->GetComponentLocation() - InitialFollowPosition).ToString());
-		Position = InitialPosition + OffsetFromOrigin + (CurrentFollow - InitialFollowPosition);
+		Position = InitialPosition + OffsetFromOrigin;// +(CurrentFollow - InitialFollowPosition);
     }
     else
     {

@@ -7,16 +7,18 @@ PhaseSpaceThread* PhaseSpaceThread::PSThread = NULL;
 PhaseSpaceThread::PhaseSpaceThread()
 {
 	Thread = FRunnableThread::Create(this, TEXT("PhaseSpace"), false);
-	LeftFootIDs.push_back(2);
+	LeftFootIDs.push_back(0);
 	LeftFootIDs.push_back(4);
 	RightFootIDs.push_back(60);
 	RightFootIDs.push_back(61);
 	CanAccessMarkers = new FCriticalSection();
 	ShouldShutDown = false;
 	NumberOfMarkersPerFoot = 2;
-	LeftLegPositions.reserve(NumberOfMarkersPerFoot);
-	RightLegPositions.reserve(NumberOfMarkersPerFoot);
-    FoundPhaseSpace = false;
+	LeftLegPositions.push_back(FVector::ZeroVector);
+	LeftLegPositions.push_back(FVector::ZeroVector);
+	RightLegPositions.push_back(FVector::ZeroVector);
+	RightLegPositions.push_back(FVector::ZeroVector);
+	FoundPhaseSpace = false;
 }
 
 bool PhaseSpaceThread::Init()
@@ -70,12 +72,12 @@ uint32 PhaseSpaceThread::Run()
 				for (OWL::Markers::iterator m = Markers.begin(); m != Markers.end(); m++)
 					if (m->cond > 0)
 					{
-						
+						CanAccessMarkers->Lock();
 						if (m->id == LeftFootIDs[0])
 						{
-							LeftLegPositions[0].X = m->x;
-							LeftLegPositions[0].Y = m->y;
-							LeftLegPositions[0].Z = m->z;
+							LeftLegPosition.X = m->x;
+							LeftLegPosition.Y = m->y;
+							LeftLegPosition.Z = m->z;
 						}
 						if (m->id == LeftFootIDs[1])
 						{
@@ -85,9 +87,9 @@ uint32 PhaseSpaceThread::Run()
 						}
 						if (m->id == RightFootIDs[0])
 						{
-							RightLegPositions[0].X = m->x;
-							RightLegPositions[0].Y = m->y;
-							RightLegPositions[0].Z = m->z;
+							RightLegPosition.X = m->x;
+							RightLegPosition.Y = m->y;
+							RightLegPosition.Z = m->z;
 						}
 						if (m->id == RightFootIDs[1])
 						{
@@ -101,11 +103,11 @@ uint32 PhaseSpaceThread::Run()
 						FRotator TempLeftLegRot = (LeftLegPositions[0] - LeftLegPositions[1]).Rotation();
 						FRotator TempRightLegRot = (RightLegPositions[0] - RightLegPositions[1]).Rotation();
 
-						CanAccessMarkers->Lock();
-						LeftLegPosition = TempLeftLeg;
-						RightLegPosition = TempRightLeg;
-						LeftLegRotation = TempLeftLegRot;
-						RightLegRotation = TempRightLegRot;
+						
+				//		LeftLegPosition = LeftLegPositions[0];
+				//		RightLegPosition = RightLegPositions[0];
+				//		LeftLegRotation = TempLeftLegRot;
+				//		RightLegRotation = TempRightLegRot;
 						CanAccessMarkers->Unlock();
 					}
 			}
