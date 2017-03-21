@@ -41,6 +41,10 @@ void AProjectOrionRadio::Tick(float DeltaTime)
     }
 
     TArray<AActor*> OverlappingActors;
+    if (!RadioInteractionCapsule)
+    {
+        return;
+    }
     RadioInteractionCapsule->GetOverlappingActors(OverlappingActors);
 
    // UE_LOG(LogTemp, Warning, TEXT("The number of intersected objects is : %i"), OverlappingActors.Num());

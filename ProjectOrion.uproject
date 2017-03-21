@@ -13,5 +13,11 @@
 				"HeadMountedDisplay"
 			]
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "SimpleHMD",
+			"Enabled": true
+		}
 	]
 }

@@ -9,6 +9,7 @@
 #include "ProjectOrionMotionController.h"
 #include "ProjectOrionPhoneSceneComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -70,7 +71,7 @@ void AProjectOrionCharacter::BeginPlay()
 	Super::BeginPlay();
     RecordDateTime = FDateTime::Now();
     StartTime = RecordDateTime;
-
+    CameraRelativeOffset = FVector(0.0f, 0.0f, 180.0f);//FirstPersonCameraComponent->RelativeLocation;
     TArray<UActorComponent*> ArrayOfMotionControllers = this->GetComponentsByClass(UProjectOrionMotionController::StaticClass());
     
     for (int i = 0; i < ArrayOfMotionControllers.Num(); i++)
@@ -344,4 +345,25 @@ void AProjectOrionCharacter::RadioTouched()
 void AProjectOrionCharacter::GrabbedWallet()
 {
     SaveData("GrabbedWallet");
+}
+
+FVector AProjectOrionCharacter::CalculateCameraPosition(FRotator CameraRotator)
+{
+    float CurrentRadius = BaseRadius * BaseRadiusScale;
+
+    // Rotator uses degrees.
+    float CameraPitch = CameraRotator.Pitch;
+
+
+    UE_LOG(LogTemp, Warning, TEXT("Camera rotation is: %s"), *CameraRotator.ToString());
+
+
+    //At 0 it should be at the top of the circle, and as it goes down, it goes around the circle, up should have no effect.
+    //Pitch is clamped between 0 and - 100 for the calculation.
+    CameraPitch = UKismetMathLibrary::DegreesToRadians(UKismetMathLibrary::ClampAngle(-CameraPitch, 0.0f, 100.0f));
+    
+    float NewX = -CurrentRadius * sin(CameraPitch);
+    float NewZ = CurrentRadius * cos(CameraPitch);
+    UE_LOG(LogTemp, Warning, TEXT("New X: %f New Z: %f"), NewX, NewZ);
+    return FVector(NewX, 0.0f, NewZ) + CameraRelativeOffset;
 }

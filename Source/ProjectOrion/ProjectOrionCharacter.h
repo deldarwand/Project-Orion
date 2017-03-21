@@ -51,6 +51,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+    float BaseRadius;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+    float BaseRadiusScale;
+
+    FVector CameraRelativeOffset;
+
+    UFUNCTION(BlueprintCallable, Category = Camera)
+    FVector CalculateCameraPosition(FRotator CameraRotator);
+
     void RadioTouched();
 
 protected:
