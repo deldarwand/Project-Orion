@@ -39,6 +39,9 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 	Mesh1P->CastShadow = true;
 	Mesh1P->RelativeRotation = FRotator(1.9f, -19.19f, 5.2f);
 	Mesh1P->RelativeLocation = FVector(-0.5f, -4.4f, -155.7f);
+	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
+
+
 
 	ActorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ActorMesh"));
 	ActorMesh->SetupAttachment(FirstPersonCameraComponent);
@@ -362,7 +365,7 @@ FVector AProjectOrionCharacter::CalculateCameraPosition(FRotator CameraRotator)
     //Pitch is clamped between 0 and - 100 for the calculation.
     CameraPitch = UKismetMathLibrary::DegreesToRadians(UKismetMathLibrary::ClampAngle(-CameraPitch, 0.0f, 100.0f));
     
-    float NewX = -CurrentRadius * sin(CameraPitch);
+    float NewX = CurrentRadius * sin(CameraPitch);
     float NewZ = CurrentRadius * cos(CameraPitch);
     UE_LOG(LogTemp, Warning, TEXT("New X: %f New Z: %f"), NewX, NewZ);
     return FVector(NewX, 0.0f, NewZ) + CameraRelativeOffset;

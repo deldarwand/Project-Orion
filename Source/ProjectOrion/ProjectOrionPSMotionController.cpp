@@ -26,6 +26,15 @@ void UProjectOrionPSMotionController::BeginPlay()
 	{
 		Hand = EControllerHand::Right;
 	}
+	if (GetAttachParent())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Got attach parent. %s"), *(GetAttachParent()->GetName()));
+		InitialFoot = GetAttachParent()->GetComponentLocation() - GetComponentLocation();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DIDN'T Get attach parent."));
+	}
 	FVector Position;
 	FRotator Orientation;
 	PollControllerState(Position, Orientation);
@@ -50,9 +59,19 @@ void UProjectOrionPSMotionController::BeginPlay()
 
 void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
+	if (NumberOfSkippedFrames < NUMBER_OF_FRAMES_TO_SKIP)
+	{
+		NumberOfSkippedFrames++;
+		return;
+	}
+	if (!DidGetVivePosition)
+	{
+		InitialVivePosition = GetComponentLocation();//FollowComponent->GetComponentLocation();
+		DidGetVivePosition = true;
+	}
 	FVector Position;
 	FRotator Orientation;
-
+	FVector RelativePosition;
 	bool bTracked = PollControllerState(Position, Orientation);
     if (!PhaseSpaceThreadInstance->FoundPhaseSpace)
     {
@@ -60,23 +79,18 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
     }
     if (FollowComponent)
     {
-		if (NumberOfSkippedFrames < NUMBER_OF_FRAMES_TO_SKIP)
-		{
-			NumberOfSkippedFrames++;
-			return;
-		}
-		if (!DidGetVivePosition)
-		{
-			InitialVivePosition = FollowComponent->GetComponentLocation();
-			DidGetVivePosition = true;
-		}
+		FRotator PSToVIVE = FRotator(0.0f, -12.7f, 0.0f);
         FVector OffsetFromOrigin = Position - PhaseSpaceOffset;
+		OffsetFromOrigin = PSToVIVE.RotateVector(OffsetFromOrigin);
         FVector CurrentFollow = FollowComponent->GetComponentLocation();
-		UE_LOG(LogTemp, Warning, TEXT("PS Position is %s."), *Position.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("RAW PS Position is %s."), *Position.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("VIVE Position is %s."), *(FollowComponent->GetComponentLocation().ToString()));
 		UE_LOG(LogTemp, Warning, TEXT("Initial Position is %s."), *InitialPosition.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Initial Player Position is %s."), *InitialFollowPosition.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("Player Position Diff is %s."), *(FollowComponent->GetComponentLocation() - InitialFollowPosition).ToString());
-		Position = InitialPosition + OffsetFromOrigin + (InitialVivePosition - InitialFollowPosition);
+		UE_LOG(LogTemp, Warning, TEXT("Initial VIVE Position is %s."), *InitialVivePosition.ToString());
+		Position = OffsetFromOrigin + InitialVivePosition;//InitialPosition + OffsetFromOrigin + (InitialVivePosition - InitialFollowPosition);
+		RelativePosition = OffsetFromOrigin + InitialFoot;
     }
     else
     {
@@ -94,7 +108,7 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 			UE_LOG(LogTemp, Warning, TEXT("Got RIGHT location %s"), *Position.ToString());
 		}
 		SetWorldLocation(Position);
-		//SetRelativeLocationAndRotation(Position, Orientation);
+		//SetRelativeLocationAndRotation(RelativePosition, Orientation);
     }
 }
 
@@ -119,8 +133,8 @@ bool UProjectOrionPSMotionController::PollControllerState(FVector& Position, FRo
 FVector UProjectOrionPSMotionController::ConvertFromPSToUE(FVector PSPosition)
 {
 	FVector UEPosition;
-	UEPosition.Y = -PSPosition.X;
-	UEPosition.X = PSPosition.Z;
+	UEPosition.Y = -PSPosition.Z;
+	UEPosition.X = -PSPosition.X;
 	UEPosition.Z = PSPosition.Y;
 	UEPosition /= 10.0f;
 	return UEPosition;
