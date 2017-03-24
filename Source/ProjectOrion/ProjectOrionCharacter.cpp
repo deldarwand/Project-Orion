@@ -53,6 +53,7 @@ AProjectOrionCharacter::AProjectOrionCharacter()
 
     PositionArray = new FVector[54000];
     RotatorArray = new FRotator[54000];
+	TimeArray = new float[54000];
 }
 
 void AProjectOrionCharacter::CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult)
@@ -211,10 +212,14 @@ FString AProjectOrionCharacter::SavePositions()
     FString PositionsString = "";
     for (int i = 0; i < CurrentRecordingIndex; i++)
     {
+		float CurrentTime = TimeArray[i];
         FVector CurrentPosition = PositionArray[i];
-        FString PositionString = CurrentPosition.ToString().Append("\r\n");
-        PositionString = PositionsString.Append(PositionString);
-    }
+
+		FString TimeString = FString::Printf(TEXT("Time: %f "), CurrentTime);// .Append("\r\n");
+		FString PositionString = CurrentPosition.ToString().Append("\r\n");
+		PositionsString = PositionsString.Append(TimeString);
+		PositionsString = PositionsString.Append(PositionString);
+	}
 
     return PositionsString;
 }
@@ -332,7 +337,13 @@ void AProjectOrionCharacter::RecordingTick(float DeltaTime)
 {
     FVector CurrentPosition = GetActorLocation();
     FRotator CurrentRotator = GetActorRotation();
-
+	
+	float TimeToAdd = DeltaTime;
+	if (CurrentRecordingIndex != 0)
+	{
+		TimeToAdd += TimeArray[CurrentRecordingIndex - 1];
+	}
+	TimeArray[CurrentRecordingIndex] = TimeToAdd;
     PositionArray[CurrentRecordingIndex] = CurrentPosition;
     RotatorArray[CurrentRecordingIndex] = CurrentRotator;
 

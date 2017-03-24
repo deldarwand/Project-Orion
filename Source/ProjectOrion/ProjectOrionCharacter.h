@@ -127,6 +127,7 @@ private:
     FDateTime RecordDateTime;
     int NumberOfPrompts;
 
+	float* TimeArray;
     FVector* PositionArray;
     FRotator* RotatorArray;
 
