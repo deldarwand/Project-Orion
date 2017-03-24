@@ -66,7 +66,7 @@ void UProjectOrionPSMotionController::TickComponent(float DeltaTime, enum ELevel
 	}
 	if (!DidGetVivePosition)
 	{
-		InitialVivePosition = GetComponentLocation();//FollowComponent->GetComponentLocation();
+		InitialVivePosition = GetComponentLocation();
 		DidGetVivePosition = true;
 	}
 	FVector Position;

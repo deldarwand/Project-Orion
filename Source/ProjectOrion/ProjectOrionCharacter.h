@@ -60,7 +60,7 @@ public:
     FVector CameraRelativeOffset;
 
     UFUNCTION(BlueprintCallable, Category = Camera)
-    FVector CalculateCameraPosition(FRotator CameraRotator);
+    FVector CalculateCameraPosition(FRotator CameraRotator, UCameraComponent* Camera);
 
     void RadioTouched();
 

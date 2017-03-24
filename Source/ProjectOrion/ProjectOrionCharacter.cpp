@@ -350,7 +350,7 @@ void AProjectOrionCharacter::GrabbedWallet()
     SaveData("GrabbedWallet");
 }
 
-FVector AProjectOrionCharacter::CalculateCameraPosition(FRotator CameraRotator)
+FVector AProjectOrionCharacter::CalculateCameraPosition(FRotator CameraRotator, UCameraComponent* Camera)
 {
     float CurrentRadius = BaseRadius * BaseRadiusScale;
 
@@ -367,6 +367,11 @@ FVector AProjectOrionCharacter::CalculateCameraPosition(FRotator CameraRotator)
     
     float NewX = CurrentRadius * sin(CameraPitch);
     float NewZ = CurrentRadius * cos(CameraPitch);
+
+	FVector ModifiedForward = Camera->GetForwardVector();
+	ModifiedForward.Z = 0.0f;
+	ModifiedForward *= NewX;
+
     UE_LOG(LogTemp, Warning, TEXT("New X: %f New Z: %f"), NewX, NewZ);
-    return FVector(NewX, 0.0f, NewZ) + CameraRelativeOffset;
+    return FVector(0.0f, 0.0f, NewZ) - ModifiedForward;
 }
