@@ -200,7 +200,7 @@ void AProjectOrionCharacter::SaveData(FString NameModifier)
     FileString = FileString.Append("\r\n\r\n");
     FileString = FileString.Append(SavePositions());
     FileString = FileString.Append("\r\n\r\n");
-    FileString = FileString.Append(SaveRotators());
+   // FileString = FileString.Append(SaveRotators());
     
     FFileHelper::SaveStringToFile(FileString, *FilePath);
     UE_LOG(LogTemp, Warning, TEXT("Printing to %s"), *FilePath);
@@ -214,9 +214,10 @@ FString AProjectOrionCharacter::SavePositions()
     {
 		float CurrentTime = TimeArray[i];
         FVector CurrentPosition = PositionArray[i];
+		FRotator CurrentRotator = RotatorArray[i];
 
 		FString TimeString = FString::Printf(TEXT("Time: %f "), CurrentTime);// .Append("\r\n");
-		FString PositionString = CurrentPosition.ToString().Append("\r\n");
+		FString PositionString = CurrentPosition.ToString().Append(FString(" ") + CurrentRotator.ToString().Append("\r\n"));
 		PositionsString = PositionsString.Append(TimeString);
 		PositionsString = PositionsString.Append(PositionString);
 	}
@@ -229,7 +230,7 @@ FString AProjectOrionCharacter::SaveRotators()
     FString RotatorsString = "";
     for (int i = 0; i < CurrentRecordingIndex; i++)
     {
-        FRotator CurrentRotator = RotatorArray[i];
+		FRotator CurrentRotator = RotatorArray[i];
         FString RotatorString = CurrentRotator.ToString().Append("\r\n");
         RotatorsString = RotatorsString.Append(RotatorString);
     }
