@@ -31,6 +31,8 @@ Buildings - http://www.blendswap.com/blends/view/69510
 
 Wallet - http://www.blendswap.com/blends/view/56373
 
+Couch - http://www.blendswap.com/blends/view/70021
+
 ###Textures:
 
 iPhone Calling and In Call screens: http://www.iclarified.com/37398/ios-71-beta-3-brings-new-iphone-call-screens-new-power-off-slider-images
