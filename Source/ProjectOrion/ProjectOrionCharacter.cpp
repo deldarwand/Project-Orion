@@ -336,6 +336,11 @@ void AProjectOrionCharacter::RayCastTick(UCameraComponent* Camera, float DeltaTi
 
 void AProjectOrionCharacter::RecordingTick(float DeltaTime)
 {
+    if (CurrentRecordingIndex >= 54000)
+    {
+        // Reached maximum recording length.
+        return;
+    }
     FVector CurrentPosition = GetActorLocation();
     FRotator CurrentRotator = GetActorRotation();
 	
